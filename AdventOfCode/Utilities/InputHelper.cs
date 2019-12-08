@@ -14,5 +14,14 @@ namespace Pontemonti.AdventOfCode.Utilities
                 yield return int.Parse(inputLine);
             }
         }
+
+        public static IEnumerable<int> ReadIntegerCommaList(string input)
+        {
+            string[] integerList = input.Split(",");
+            foreach (string integer in integerList)
+            {
+                yield return int.Parse(integer);
+            }
+        }
     }
 }
