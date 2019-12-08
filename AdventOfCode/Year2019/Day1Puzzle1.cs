@@ -117,7 +117,7 @@ namespace Pontemonti.AdventOfCode.Year2019
 
         public static int CalculateTotalFuelRequirements()
         {
-            int[] masses = InputHelper.ReadIntegers(input).ToArray();
+            int[] masses = InputHelper.ReadIntegerLines(input).ToArray();
             int[] fuelRequirements = masses.Select(mass => CalculateFuelRequirements(mass)).ToArray();
             int totalFuelRequirement = fuelRequirements.Sum();
             return totalFuelRequirement;

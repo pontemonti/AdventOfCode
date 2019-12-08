@@ -6,7 +6,7 @@ namespace Pontemonti.AdventOfCode.Utilities
 {
     public class InputHelper
     {
-        public static IEnumerable<int> ReadIntegers(string input)
+        public static IEnumerable<int> ReadIntegerLines(string input)
         {
             string[] inputLines = input.Split(Environment.NewLine);
             foreach (string inputLine in inputLines)
