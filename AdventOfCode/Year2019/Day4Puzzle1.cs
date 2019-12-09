@@ -42,7 +42,7 @@ namespace Pontemonti.AdventOfCode.Year2019
         public static int CalculateResult()
         {
             FuelDepotPasswordFinder fuelDepotPasswordFinder = new FuelDepotPasswordFinder(numberOfDigits, minimum, maximum);
-            int[] validPasswords = fuelDepotPasswordFinder.FindAllValidPasswords().ToArray();
+            int[] validPasswords = fuelDepotPasswordFinder.FindAllValidPasswordsV1().ToArray();
             int numberOfValidPasswords = validPasswords.Length;
             return numberOfValidPasswords;
         }

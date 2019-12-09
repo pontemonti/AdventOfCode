@@ -31,7 +31,7 @@ namespace Pontemonti.AdventOfCode.Test.Password
         private void TestIsPasswordValid(int password, bool expectedIsValid)
         {
             FuelDepotPasswordFinder fuelDepotPasswordFinder = new FuelDepotPasswordFinder(6, 0, 999999);
-            int[] validPasswords = fuelDepotPasswordFinder.FindAllValidPasswords().ToArray();
+            int[] validPasswords = fuelDepotPasswordFinder.FindAllValidPasswordsV1().ToArray();
             bool actualIsValid = validPasswords.Contains(password);
             Assert.AreEqual(expectedIsValid, actualIsValid);
         }

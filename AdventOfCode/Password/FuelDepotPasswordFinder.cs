@@ -18,7 +18,7 @@ namespace Pontemonti.AdventOfCode.Password
             this.numberOfDigits = numberOfDigits;
         }
 
-        public IEnumerable<int> FindAllValidPasswords()
+        public IEnumerable<int> FindAllValidPasswordsV1()
         {
             int count = this.maximum - this.minimum;
             int[] passwords = Enumerable.Range(this.minimum, count).ToArray();
@@ -26,6 +26,44 @@ namespace Pontemonti.AdventOfCode.Password
             passwords = FilterByDigitsNeverDecrease(passwords).ToArray();
             passwords = FilterByDigitsWithTwoAdjacentDigits(passwords).ToArray();
             return passwords;
+        }
+
+        public IEnumerable<int> FindAllValidPasswordsV2()
+        {
+            int[] passwords = FindAllValidPasswordsV1().ToArray();
+            passwords = FilterByDigitsWithExactlyTwoAdjacentDigits(passwords).ToArray();
+            return passwords;
+        }
+
+        private IEnumerable<int> FilterByDigitsWithExactlyTwoAdjacentDigits(IEnumerable<int> passwords)
+        {
+            foreach (int password in passwords)
+            {
+                int[] passwordDigits = password.ToString().Select(c => int.Parse(c.ToString())).ToArray();
+                int currentDigit = passwordDigits[0];
+                int currentDigitCounter = 1;
+                for (int i = 1; i < passwordDigits.Length; i++)
+                {
+                    if (passwordDigits[i] == currentDigit)
+                    {
+                        currentDigitCounter++;
+                    }
+                    else if (currentDigitCounter == 2)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        currentDigit = passwordDigits[i];
+                        currentDigitCounter = 1;
+                    }
+                }
+
+                if (currentDigitCounter == 2)
+                {
+                    yield return password;
+                }
+            }
         }
 
         private static IEnumerable<int> FilterByNumberOfDigits(IEnumerable<int> passwords, int numberOfDigits)
