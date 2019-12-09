@@ -19,18 +19,54 @@ namespace Pontemonti.AdventOfCode.Utilities
         public static int CalculateManhattanDistanceForClosestIntersection(IEnumerable<WirePath> wire1Paths, IEnumerable<WirePath> wire2Paths)
         {
             Point startingPoint = new Point(0, 0);
-            Point closestPoint = FindClosestIntersection(wire1Paths, wire2Paths);
+            Point closestPoint = FindClosestIntersectionByManhattanDistance(wire1Paths, wire2Paths);
             return CalculateManhattanDistance(startingPoint, closestPoint);
         }
 
         public static int CalculateManhattanDistanceForClosestIntersection(IEnumerable<Point> wire1Points, IEnumerable<Point> wire2Points)
         {
             Point startingPoint = new Point(0, 0);
-            Point closestPoint = FindClosestIntersection(wire1Points, wire2Points);
+            Point closestPoint = FindClosestIntersectionByManhattanDistance(wire1Points, wire2Points);
             return CalculateManhattanDistance(startingPoint, closestPoint);
         }
 
-        public static Point FindClosestIntersection(IEnumerable<WirePath> wire1Paths, IEnumerable<WirePath> wire2Paths)
+        public static int CalculateStepsToClosestIntersection(IEnumerable<WirePath> wire1Paths, IEnumerable<WirePath> wire2Paths)
+        {
+            Point[] wire1Points = WirePath.GetPoints(wire1Paths).ToArray();
+            Point[] wire2Points = WirePath.GetPoints(wire2Paths).ToArray();
+            return CalculateStepsToClosestIntersection(wire1Points, wire2Points);
+        }
+
+        public static int CalculateStepsToClosestIntersection(IEnumerable<Point> wire1Points, IEnumerable<Point> wire2Points)
+        {
+            Point closestPoint = FindClosestIntersectionBySteps(wire1Points, wire2Points);
+            return CalculateTotalStepsToPoint(closestPoint, wire1Points, wire2Points);
+        }
+
+        public static int CalculateStepsToPoint(Point pointToFind, IEnumerable<Point> points)
+        {
+            int steps = 0;
+            foreach (Point point in points)
+            {
+                steps++;
+                if (point.Equals(pointToFind))
+                {
+                    return steps;
+                }
+            }
+
+            throw new InvalidOperationException();
+        }
+
+        public static int CalculateTotalStepsToPoint(Point pointToFind, IEnumerable<Point> wire1Points, IEnumerable<Point> wire2Points)
+        {
+            int wire1Steps = CalculateStepsToPoint(pointToFind, wire1Points);
+            int wire2Steps = CalculateStepsToPoint(pointToFind, wire2Points);
+            int totalSteps = wire1Steps + wire2Steps;
+            return totalSteps;
+        }
+
+        public static Point FindClosestIntersectionByManhattanDistance(IEnumerable<WirePath> wire1Paths, IEnumerable<WirePath> wire2Paths)
         {
             Point startingPoint = new Point(0, 0);
             Point[] intersections = FindIntersections(wire1Paths, wire2Paths).ToArray();
@@ -38,11 +74,27 @@ namespace Pontemonti.AdventOfCode.Utilities
             return closestPoint;
         }
 
-        public static Point FindClosestIntersection(IEnumerable<Point> wire1Points, IEnumerable<Point> wire2Points)
+        public static Point FindClosestIntersectionByManhattanDistance(IEnumerable<Point> wire1Points, IEnumerable<Point> wire2Points)
         {
             Point startingPoint = new Point(0, 0);
             Point[] intersections = FindIntersections(wire1Points, wire2Points).ToArray();
             Point closestPoint = intersections.OrderBy(point => CalculateManhattanDistance(startingPoint, point)).First();
+            return closestPoint;
+        }
+
+        public static Point FindClosestIntersectionBySteps(IEnumerable<WirePath> wire1Paths, IEnumerable<WirePath> wire2Paths)
+        {
+            Point[] intersections = FindIntersections(wire1Paths, wire2Paths).ToArray();
+            Point[] wire1Points = WirePath.GetPoints(wire1Paths).ToArray();
+            Point[] wire2Points = WirePath.GetPoints(wire2Paths).ToArray();
+            Point closestPoint = intersections.OrderBy(point => CalculateTotalStepsToPoint(point, wire1Points, wire2Points)).First();
+            return closestPoint;
+        }
+
+        public static Point FindClosestIntersectionBySteps(IEnumerable<Point> wire1Points, IEnumerable<Point> wire2Points)
+        {
+            Point[] intersections = FindIntersections(wire1Points, wire2Points).ToArray();
+            Point closestPoint = intersections.OrderBy(point => CalculateTotalStepsToPoint(point, wire1Points, wire2Points)).First();
             return closestPoint;
         }
 

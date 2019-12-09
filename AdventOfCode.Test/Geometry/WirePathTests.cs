@@ -63,7 +63,7 @@ namespace Pontemonti.AdventOfCode.Test.Geometry
             IEnumerable<Point> wire1Points = WirePath.GetPoints(wire1Paths);
             IEnumerable<WirePath> wire2Paths = InputHelper.ReadWirePathCommaList(wire2PathInput);
             IEnumerable<Point> wire2Points = WirePath.GetPoints(wire2Paths);
-            Point actualClosestPoint = GeometryHelper.FindClosestIntersection(wire1Points, wire2Points);
+            Point actualClosestPoint = GeometryHelper.FindClosestIntersectionByManhattanDistance(wire1Points, wire2Points);
             Assert.AreEqual(expectedClosesPoint, actualClosestPoint);
         }
 
