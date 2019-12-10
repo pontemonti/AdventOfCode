@@ -1,78 +1,78 @@
-﻿using System;
+﻿using Pontemonti.AdventOfCode.Intcode.Operations;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Pontemonti.AdventOfCode.Intcode
 {
     public class IntcodeComputer
     {
-        private int[] integers;
-        private int position;
-
         public IntcodeComputer(int[] integers)
         {
-            this.integers = integers;
-            this.position = 0;
+            this.Integers = integers;
+            this.CurrentPosition = 0;
         }
 
-        public int[] GetCurrentState() => this.integers;
+        public int[] Integers { get; }
+        public int CurrentPosition { get; set; }
+
+        public int[] GetCurrentState() => this.Integers;
 
         public void Run()
         {
-            Opcode opcode;
+            IOperation operation;
             do
             {
-                opcode = this.GetOpcode();
-                this.ExecuteCommand(opcode);
-                this.GoToNextPosition();
+                operation = this.GetOperation();
+                operation.Execute();
+                this.GoToNextPosition(operation);
             }
-            while (opcode != Opcode.Exit);
-        }
-
-        private void ExecuteCommand(Opcode opcode)
-        {
-            switch(opcode)
-            {
-                case Opcode.Add:
-                    this.ExecuteAdd();
-                    break;
-                case Opcode.Multiply:
-                    this.ExecuteMultiply();
-                    break;
-            }
-        }
-
-        private void ExecuteMultiply()
-        {
-            this.ExecuteIntegerOperation((n1, n2) => n1 * n2);
-        }
-
-        private void ExecuteAdd()
-        {
-            this.ExecuteIntegerOperation((n1, n2) => n1 + n2);
-        }
-
-        private void ExecuteIntegerOperation(Func<int, int, int> integerOperation)
-        {
-            int n1Position = this.integers[this.position + 1];
-            int n2Position = this.integers[this.position + 2];
-            int n1 = this.integers[n1Position];
-            int n2 = this.integers[n2Position];
-            int result = integerOperation(n1, n2);
-            int resultPosition = this.integers[this.position + 3];
-            this.integers[resultPosition] = result;
+            while (operation.Opcode != Opcode.Exit);
         }
 
         private Opcode GetOpcode()
         {
-            int opcodeNumber = this.integers[this.position];
+            int opcodeNumber = this.Integers[this.CurrentPosition];
             Opcode opcode = (Opcode)opcodeNumber;
             return opcode;
         }
 
-        private void GoToNextPosition()
+        private IOperation GetOperation()
         {
-            this.position += 4;
+            Opcode opcode = this.GetOpcode();
+            switch (opcode)
+            {
+                // TODO: Avoid harcoding number of parameters here
+                case Opcode.Add:
+                    return new Add(this, this.GetParameters(3).ToArray());
+                case Opcode.Multiply:
+                    return new Multiply(this, this.GetParameters(3).ToArray());
+                case Opcode.Input:
+                    return new Input(this, this.GetParameters(1).ToArray());
+                case Opcode.Output:
+                    return new Output(this, this.GetParameters(1).ToArray());
+                case Opcode.Exit:
+                    return new Exit(this);
+            }
+
+            throw new InvalidOperationException();
+        }
+
+        private IEnumerable<Parameter> GetParameters(int numberOfParameters)
+        {
+            for (int i = 1; i <= numberOfParameters; i++)
+            {
+                int parameterValue = this.Integers[this.CurrentPosition + i];
+                ParameterMode parameterMode = ParameterMode.PositionMode;
+                Parameter parameter = new Parameter(parameterMode, parameterValue);
+                yield return parameter;
+            }
+        }
+
+        private void GoToNextPosition(IOperation operation)
+        {
+            this.CurrentPosition += operation.NumberOfParameters + 1;
         }
     }
 }

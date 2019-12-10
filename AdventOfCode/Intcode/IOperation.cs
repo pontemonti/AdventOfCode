@@ -4,12 +4,10 @@ using System.Text;
 
 namespace Pontemonti.AdventOfCode.Intcode
 {
-    public enum Opcode
+    public interface IOperation
     {
-        Add = 1,
-        Multiply = 2,
-        Input = 3,
-        Output = 4,
-        Exit = 99
+        int NumberOfParameters { get; }
+        Opcode Opcode { get; }
+        void Execute();
     }
 }
