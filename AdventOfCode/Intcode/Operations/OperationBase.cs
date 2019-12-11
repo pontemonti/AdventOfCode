@@ -19,10 +19,27 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
 
         protected void ExecuteIntegerOperation(Func<int, int, int> integerOperation)
         {
-            int n1 = this.Integers[this.parameters[0].Value];
-            int n2 = this.Integers[this.parameters[1].Value];
+            int n1 = this.GetParameter(0);
+            int n2 = this.GetParameter(1);
             int result = integerOperation(n1, n2);
+
+            // "Parameters that an instruction writes to will never be in immediate mode."
+            // => Assume position mode
             this.Integers[this.parameters[2].Value] = result;
+        }
+
+        protected int GetParameter(int parameterNumber)
+        {
+            Parameter parameter = this.parameters[parameterNumber];
+            switch (parameter.ParameterMode)
+            {
+                case ParameterMode.PositionMode:
+                    return this.Integers[parameter.Value];
+                case ParameterMode.ImmediateMode:
+                    return parameter.Value;
+                default:
+                    throw new InvalidOperationException();
+            }
         }
     }
 }

@@ -8,14 +8,23 @@ namespace Pontemonti.AdventOfCode.Intcode
 {
     public class IntcodeComputer
     {
-        public IntcodeComputer(int[] integers)
+        public IntcodeComputer(int[] integers, int input)
         {
             this.Integers = integers;
             this.CurrentPosition = 0;
+            this.Input = input;
+            this.Output = 0;
+        }
+
+        public IntcodeComputer(int[] integers)
+            : this(integers, -1)
+        {
         }
 
         public int[] Integers { get; }
         public int CurrentPosition { get; set; }
+        public int Input { get; }
+        public int Output { get; set; }
 
         public int[] GetCurrentState() => this.Integers;
 
@@ -33,7 +42,8 @@ namespace Pontemonti.AdventOfCode.Intcode
 
         private Opcode GetOpcode()
         {
-            int opcodeNumber = this.Integers[this.CurrentPosition];
+            int opcodeNumberWithParameterModes = this.Integers[this.CurrentPosition];
+            int opcodeNumber = opcodeNumberWithParameterModes % 100;
             Opcode opcode = (Opcode)opcodeNumber;
             return opcode;
         }
@@ -64,10 +74,22 @@ namespace Pontemonti.AdventOfCode.Intcode
             for (int i = 1; i <= numberOfParameters; i++)
             {
                 int parameterValue = this.Integers[this.CurrentPosition + i];
-                ParameterMode parameterMode = ParameterMode.PositionMode;
+                ParameterMode parameterMode = this.GetParameterMode(i);
                 Parameter parameter = new Parameter(parameterMode, parameterValue);
                 yield return parameter;
             }
+        }
+
+        private ParameterMode GetParameterMode(int parameterNumber)
+        {
+            int divideBy = (int)Math.Pow(10, parameterNumber + 1);
+            int mod = divideBy * 10;
+
+            int operationValue = this.Integers[this.CurrentPosition];
+            int scopedToParameter = operationValue % mod;
+            int parameterModeValue = scopedToParameter / divideBy;
+            ParameterMode parameterMode = (ParameterMode)parameterModeValue;
+            return parameterMode;
         }
 
         private void GoToNextPosition(IOperation operation)

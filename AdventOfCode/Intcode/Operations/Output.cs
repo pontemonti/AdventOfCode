@@ -14,6 +14,9 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
         public int NumberOfParameters => 1;
         public Opcode Opcode => Opcode.Output;
 
-        public void Execute() => throw new NotImplementedException();
+        public void Execute()
+        {
+            this.intcodeComputer.Output = this.GetParameter(0);
+        }
     }
 }

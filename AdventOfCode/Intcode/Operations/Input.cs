@@ -14,6 +14,11 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
         public int NumberOfParameters => 1;
         public Opcode Opcode => Opcode.Input;
 
-        public void Execute() => throw new NotImplementedException();
+        public void Execute()
+        {
+            // "Parameters that an instruction writes to will never be in immediate mode."
+            // => Assume position mode
+            this.Integers[this.parameters[0].Value] = this.intcodeComputer.Input;
+        }
     }
 }
