@@ -56,6 +56,19 @@ namespace Pontemonti.AdventOfCode.Test.Intcode
             this.TestIntcodeComputer(input, expectedEndState);
         }
 
+        [TestMethod]
+        public void TestInputAndOutputOperations()
+        {
+            // The program 3,0,4,0,99 outputs whatever it gets as input, then halts.
+            string operations = "3,0,4,0,99";
+            int input = 12345;
+            int[] inputIntegers = InputHelper.ReadIntegerCommaList(operations).ToArray();
+            IntcodeComputer intcodeComputer = new IntcodeComputer(inputIntegers, input);
+            intcodeComputer.Run();
+            int output = intcodeComputer.Output;
+            Assert.AreEqual(input, output);
+        }
+
         private void TestIntcodeComputer(string input, string expectedEndState)
         {
             int[] inputIntegers = InputHelper.ReadIntegerCommaList(input).ToArray();

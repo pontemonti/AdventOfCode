@@ -35,7 +35,12 @@ namespace Pontemonti.AdventOfCode.Intcode
             {
                 operation = this.GetOperation();
                 operation.Execute();
-                this.GoToNextPosition(operation);
+
+                // This is used for Jump operations, where we don't want to jump again if we've just jumped.
+                if (operation.GoToNextOperation)
+                {
+                    this.GoToNextPosition(operation);
+                }
             }
             while (operation.Opcode != Opcode.Exit);
         }
@@ -62,6 +67,14 @@ namespace Pontemonti.AdventOfCode.Intcode
                     return new Input(this, this.GetParameters(1).ToArray());
                 case Opcode.Output:
                     return new Output(this, this.GetParameters(1).ToArray());
+                case Opcode.JumpIfTrue:
+                    return new JumpIfTrue(this, this.GetParameters(2).ToArray());
+                case Opcode.JumpIfFalse:
+                    return new JumpIfFalse(this, this.GetParameters(2).ToArray());
+                case Opcode.LessThan:
+                    return new LessThan(this, this.GetParameters(3).ToArray());
+                case Opcode.Equals:
+                    return new Equals(this, this.GetParameters(3).ToArray());
                 case Opcode.Exit:
                     return new Exit(this);
             }

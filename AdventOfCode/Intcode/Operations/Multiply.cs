@@ -11,10 +11,10 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
         {
         }
 
-        public int NumberOfParameters => 3;
-        public Opcode Opcode => Opcode.Multiply;
+        public override int NumberOfParameters => 3;
+        public override Opcode Opcode => Opcode.Multiply;
 
-        public void Execute()
+        public override void Execute()
         {
             this.ExecuteIntegerOperation((n1, n2) => n1 * n2);
         }

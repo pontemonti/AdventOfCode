@@ -11,10 +11,10 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
         {
         }
 
-        public int NumberOfParameters => 1;
-        public Opcode Opcode => Opcode.Input;
+        public override int NumberOfParameters => 1;
+        public override Opcode Opcode => Opcode.Input;
 
-        public void Execute()
+        public override void Execute()
         {
             // "Parameters that an instruction writes to will never be in immediate mode."
             // => Assume position mode

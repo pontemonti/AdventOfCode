@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Pontemonti.AdventOfCode.Intcode.Operations
 {
-    public abstract class OperationBase
+    public abstract class OperationBase : IOperation
     {
         protected readonly IntcodeComputer intcodeComputer;
         protected readonly Parameter[] parameters;
@@ -15,7 +15,13 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
             this.parameters = parameters;
         }
 
+        public virtual bool GoToNextOperation => true;
+        public abstract int NumberOfParameters { get; }
+        public abstract Opcode Opcode { get; }
+
         protected int[] Integers => this.intcodeComputer.Integers;
+
+        public abstract void Execute();
 
         protected void ExecuteIntegerOperation(Func<int, int, int> integerOperation)
         {

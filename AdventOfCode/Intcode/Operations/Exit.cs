@@ -11,10 +11,10 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
         {
         }
 
-        public int NumberOfParameters => 0;
-        public Opcode Opcode => Opcode.Exit;
+        public override int NumberOfParameters => 0;
+        public override Opcode Opcode => Opcode.Exit;
 
-        public void Execute()
+        public override void Execute()
         {
             // Do nothing
         }
