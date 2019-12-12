@@ -27,6 +27,18 @@ namespace Pontemonti.AdventOfCode.Utilities
             }
         }
 
+        public static IEnumerable<(string, string)> ReadOrbitPairLines(string input)
+        {
+            string[] orbitPairList = input.Split(Environment.NewLine);
+            foreach (string orbitPair in orbitPairList)
+            {
+                string[] orbits = orbitPair.Split(')');
+                string to = orbits[0];
+                string from = orbits[1];
+                yield return (to, from);
+            }
+        }
+
         public static IEnumerable<WirePath> ReadWirePathCommaList(string input)
         {
             string[] wirePathList = input.Split(Comma);

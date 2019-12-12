@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Pontemonti.AdventOfCode.Graph;
+using Pontemonti.AdventOfCode.Utilities;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Pontemonti.AdventOfCode.Year2019
@@ -74,7 +77,19 @@ namespace Pontemonti.AdventOfCode.Year2019
     /// </summary>
     public class Day6Puzzle1 : IPuzzle
     {
-        public void Solve() => throw new NotImplementedException();
+        public void Solve()
+        {
+            int result = CalculateResult();
+            Console.WriteLine($"Total number of orbits: {result}");
+        }
+
+        public static int CalculateResult()
+        {
+            (string, string)[] orbitPairArray = InputHelper.ReadOrbitPairLines(input).ToArray();
+            DirectedGraph<string> orbitGraph = DirectedGraph<string>.CreateFromInput(orbitPairArray);
+            int totalNumberOfOrbits = orbitGraph.GetTotalNumberOfOrbits();
+            return totalNumberOfOrbits;
+        }
 
         public const string input = @"QVP)6MB
 LV9)5WD
