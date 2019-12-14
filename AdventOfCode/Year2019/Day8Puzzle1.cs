@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pontemonti.AdventOfCode.Image;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -53,6 +54,17 @@ namespace Pontemonti.AdventOfCode.Year2019
         public const int inputImageWidth = 25;
         public const int inputImageHeight = 6;
 
-        public void Solve() => throw new NotImplementedException();
+        public void Solve()
+        {
+            int result = CalculateResult();
+            Console.WriteLine($"Number of 1 digits multiplied by the number of 2 digits: {result}");
+        }
+
+        public static int CalculateResult()
+        {
+            SpaceImageFormat spaceImage = SpaceImageFormat.ParseSpaceImage(input, inputImageWidth, inputImageHeight);
+            int checksum = spaceImage.ElfChecksum();
+            return checksum;
+        }
     }
 }
