@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Pontemonti.AdventOfCode.Spaceship;
+using Pontemonti.AdventOfCode.Utilities;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Pontemonti.AdventOfCode.Year2019
@@ -82,6 +85,30 @@ namespace Pontemonti.AdventOfCode.Year2019
     {
         public const string input = "3,8,1001,8,10,8,105,1,0,0,21,42,51,76,101,118,199,280,361,442,99999,3,9,101,5,9,9,102,2,9,9,1001,9,4,9,102,2,9,9,4,9,99,3,9,1002,9,3,9,4,9,99,3,9,1002,9,4,9,1001,9,3,9,1002,9,5,9,101,3,9,9,1002,9,2,9,4,9,99,3,9,101,4,9,9,1002,9,2,9,1001,9,3,9,1002,9,3,9,101,4,9,9,4,9,99,3,9,101,3,9,9,1002,9,3,9,101,2,9,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,99,3,9,1001,9,1,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,1,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1002,9,2,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,1,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,101,1,9,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,99";
 
-        public void Solve() => throw new NotImplementedException();
+        public void Solve()
+        {
+            int[] program = InputHelper.ReadIntegerCommaList(input).ToArray();
+            (int result, _) = GetResult(program);
+            Console.WriteLine($"The highest signal that can be sent to the thrusters is {result}");
+        }
+
+        public static (int, int[]) GetResult(int[] program)
+        {
+            IEnumerable<int>[] phaseSettingsPermutations = EnumerableHelper.GetPermutations(Enumerable.Range(0, 5)).ToArray();
+            int maxOutputSignal = 0;
+            int[] maxPhaseSettings = new int[0];
+            foreach (IEnumerable<int> phaseSettings in phaseSettingsPermutations)
+            {
+                AmplifierSeries amplifierSeries = new AmplifierSeries(program, phaseSettings.ToArray());
+                int outputSignal = amplifierSeries.GetOutputSignal();
+                if (outputSignal > maxOutputSignal)
+                {
+                    maxOutputSignal = outputSignal;
+                    maxPhaseSettings = phaseSettings.ToArray();
+                }
+            }
+
+            return (maxOutputSignal, maxPhaseSettings);
+        }
     }
 }

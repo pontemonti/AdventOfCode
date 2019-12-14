@@ -8,11 +8,12 @@ namespace Pontemonti.AdventOfCode.Intcode
 {
     public class IntcodeComputer
     {
-        public IntcodeComputer(int[] integers, int input)
+        public IntcodeComputer(int[] integers, params int[] inputs)
         {
             this.Integers = integers;
             this.CurrentPosition = 0;
-            this.Input = input;
+            this.CurrentInputPosition = 0;
+            this.Inputs = inputs;
             this.Output = 0;
         }
 
@@ -23,7 +24,8 @@ namespace Pontemonti.AdventOfCode.Intcode
 
         public int[] Integers { get; }
         public int CurrentPosition { get; set; }
-        public int Input { get; }
+        public int CurrentInputPosition { get; set; }
+        public int[] Inputs { get; }
         public int Output { get; set; }
 
         public int[] GetCurrentState() => this.Integers;

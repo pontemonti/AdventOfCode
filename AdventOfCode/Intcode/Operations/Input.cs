@@ -18,7 +18,7 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
         {
             // "Parameters that an instruction writes to will never be in immediate mode."
             // => Assume position mode
-            this.Integers[this.parameters[0].Value] = this.intcodeComputer.Input;
+            this.Integers[this.parameters[0].Value] = this.intcodeComputer.Inputs[this.intcodeComputer.CurrentInputPosition++];
         }
     }
 }
