@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Pontemonti.AdventOfCode.Spaceship
 {
@@ -9,21 +10,49 @@ namespace Pontemonti.AdventOfCode.Spaceship
     {
         private readonly Amplifier[] amplifiers;
 
-        public AmplifierSeries(int[] program, int[] phaseSettings)
+        public AmplifierSeries(int[] program, int[] phaseSettings, bool useFeedback = false)
         {
-            this.amplifiers = phaseSettings.Select(phaseSetting => new Amplifier(program, phaseSetting)).ToArray();
+            int amplifierNumber = 1;
+            List<Amplifier> amplifiers = new List<Amplifier>();
+            Amplifier previousAmplifier = null;
+            foreach (int phaseSetting in phaseSettings)
+            {
+                // Create a copy of the program for each amplifier, so that we don't pass around
+                // refereneces to the array.
+                // We can also solve this by passing around the string instead and parsing the string
+                // inside of IntcodeComputer.
+                int[] programCopy = new List<int>(program).ToArray();
+                Amplifier amplifier = new Amplifier($"Amplifier{amplifierNumber++}", programCopy, phaseSetting);
+                if (previousAmplifier != null)
+                {
+                    previousAmplifier.SetNextAmplifier(amplifier);
+                }
+
+                amplifiers.Add(amplifier);
+                previousAmplifier = amplifier;
+            }
+
+            if (useFeedback)
+            {
+                amplifiers.Last().SetNextAmplifier(amplifiers.First());
+            }
+
+            this.amplifiers = amplifiers.ToArray();
         }
 
         public int GetOutputSignal()
         {
-            // "output signal" is the input to the next amplifier (and finally to the thruster)
             // For the first amplifier, the input should be 0.
-            int outputSignal = 0;
+            this.amplifiers.First().IntcodeComputer.ProvideInput(0);
+            List<Task<int>> taskList = new List<Task<int>>();
             foreach (Amplifier amplifier in this.amplifiers)
             {
-                outputSignal = amplifier.Run(outputSignal);
+                Task<int> task = Task.Run<int>(() => amplifier.Run());
+                taskList.Add(task);
             }
 
+            Task.WaitAll(taskList.ToArray());
+            int outputSignal = taskList.Last().Result;
             return outputSignal;
         }
     }

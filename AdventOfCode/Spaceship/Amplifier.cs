@@ -9,18 +9,32 @@ namespace Pontemonti.AdventOfCode.Spaceship
     {
         private readonly int[] program;
         private readonly int phaseSetting;
+        private Amplifier nextAmplifier;
 
-        public Amplifier(int[] program, int phaseSetting)
+        public Amplifier(string name, int[] program, int phaseSetting)
         {
             this.program = program;
             this.phaseSetting = phaseSetting;
+            this.IntcodeComputer = new IntcodeComputer(name, this.program, this.phaseSetting);
         }
 
-        public int Run(int inputSignal)
+        public IntcodeComputer IntcodeComputer { get; }
+
+        public int Run()
         {
-            IntcodeComputer intcodeComputer = new IntcodeComputer(this.program, this.phaseSetting, inputSignal);
-            intcodeComputer.Run();
-            return intcodeComputer.Output;
+            this.IntcodeComputer.Run();
+            return this.IntcodeComputer.Output;
+        }
+
+        public void SetNextAmplifier(Amplifier nextAmplifier)
+        {
+            this.nextAmplifier = nextAmplifier;
+            this.IntcodeComputer.OutputSent += this.IntcodeComputerOutputSent;
+        }
+
+        private void IntcodeComputerOutputSent(object? sender, int outputSignal)
+        {
+            this.nextAmplifier.IntcodeComputer.ProvideInput(outputSignal);
         }
     }
 }

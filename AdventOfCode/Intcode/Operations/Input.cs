@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Pontemonti.AdventOfCode.Intcode.Operations
@@ -18,7 +19,8 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
         {
             // "Parameters that an instruction writes to will never be in immediate mode."
             // => Assume position mode
-            this.Integers[this.parameters[0].Value] = this.intcodeComputer.Inputs[this.intcodeComputer.CurrentInputPosition++];
+            this.Integers[this.parameters[0].Value] = this.intcodeComputer.ReadNextInput();
+            Console.WriteLine($"{this.intcodeComputer.Name}: After input: {string.Join(",", this.intcodeComputer.Integers.Select(n => n.ToString()))}");
         }
     }
 }

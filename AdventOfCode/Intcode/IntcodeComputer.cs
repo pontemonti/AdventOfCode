@@ -3,18 +3,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Pontemonti.AdventOfCode.Intcode
 {
     public class IntcodeComputer
     {
-        public IntcodeComputer(int[] integers, params int[] inputs)
+        private Semaphore semaphore;
+
+        public IntcodeComputer(string name, int[] integers, params int[] inputs)
         {
+            this.Name = name;
+            this.semaphore = new Semaphore(0, 100);
             this.Integers = integers;
             this.CurrentPosition = 0;
             this.CurrentInputPosition = 0;
-            this.Inputs = inputs;
+            this.Inputs = new List<int>();
+            foreach (int input in inputs)
+            {
+                this.ProvideInput(input);
+            }
+
             this.Output = 0;
+        }
+
+        public IntcodeComputer(int[] integers, params int[] inputs)
+            : this("IntcodeComputer", integers, inputs)
+        {
         }
 
         public IntcodeComputer(int[] integers)
@@ -25,10 +40,35 @@ namespace Pontemonti.AdventOfCode.Intcode
         public int[] Integers { get; }
         public int CurrentPosition { get; set; }
         public int CurrentInputPosition { get; set; }
-        public int[] Inputs { get; }
+        public List<int> Inputs { get; }
+        public string Name { get; }
         public int Output { get; set; }
 
+        public event EventHandler<int> OutputSent;
+
         public int[] GetCurrentState() => this.Integers;
+
+        public void ProvideInput(int input)
+        {
+            this.Inputs.Add(input);
+            int previousCount = this.semaphore.Release();
+            
+            Console.WriteLine($"{this.Name}: Input {input} added to position {this.Inputs.Count}; semaphore previous count: {previousCount}.");
+        }
+
+        public int ReadNextInput()
+        {
+            if (this.semaphore.WaitOne(60 * 1000))
+            {
+                int input = this.Inputs[this.CurrentInputPosition++];
+                Console.WriteLine($"{this.Name}: Input read: {input}; next input position: {this.CurrentInputPosition}");
+                return input;
+            }
+            else
+            {
+                throw new TimeoutException($"While waiting for input, failed to enter semaphore within 60 seconds. CurrentInputPosition: {this.CurrentInputPosition}; Inputs: {string.Join(", ", this.Inputs.Select(x => x.ToString()))}");
+            }
+        }
 
         public void Run()
         {
@@ -45,6 +85,14 @@ namespace Pontemonti.AdventOfCode.Intcode
                 }
             }
             while (operation.Opcode != Opcode.Exit);
+        }
+
+        internal void OnOutputSent(int output)
+        {
+            // Store latest output in Output property
+            Console.WriteLine($"{this.Name}: sent output {output}");
+            this.Output = output;
+            this.OutputSent?.Invoke(this, output);
         }
 
         private Opcode GetOpcode()

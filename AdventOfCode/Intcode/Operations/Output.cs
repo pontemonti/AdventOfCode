@@ -16,7 +16,7 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
 
         public override void Execute()
         {
-            this.intcodeComputer.Output = this.GetParameter(0);
+            this.intcodeComputer.OnOutputSent(this.GetParameter(0));
         }
     }
 }
