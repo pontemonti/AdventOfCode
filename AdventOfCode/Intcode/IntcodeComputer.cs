@@ -18,6 +18,7 @@ namespace Pontemonti.AdventOfCode.Intcode
             this.Program = program;
             this.CurrentPosition = 0;
             this.CurrentInputPosition = 0;
+            this.RelativeBasePosition = 0;
             this.Inputs = new List<long>();
             foreach (long input in inputs)
             {
@@ -48,6 +49,7 @@ namespace Pontemonti.AdventOfCode.Intcode
         public List<long> Inputs { get; }
         public string Name { get; }
         public long Output { get; set; }
+        public long RelativeBasePosition { get; set; }
 
         public event EventHandler<long> OutputSent;
 
@@ -130,6 +132,8 @@ namespace Pontemonti.AdventOfCode.Intcode
                     return new LessThan(this, this.GetParameters(3).ToArray());
                 case Opcode.Equals:
                     return new Equals(this, this.GetParameters(3).ToArray());
+                case Opcode.AdjustRelativeBase:
+                    return new AdjustRelativeBase(this, this.GetParameters(1).ToArray());
                 case Opcode.Exit:
                     return new Exit(this);
             }
