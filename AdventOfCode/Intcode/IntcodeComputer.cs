@@ -11,20 +11,25 @@ namespace Pontemonti.AdventOfCode.Intcode
     {
         private Semaphore semaphore;
 
-        public IntcodeComputer(string name, int[] integers, params int[] inputs)
+        public IntcodeComputer(string name, long[] program, params long[] inputs)
         {
             this.Name = name;
             this.semaphore = new Semaphore(0, 100);
-            this.Integers = integers;
+            this.Program = program;
             this.CurrentPosition = 0;
             this.CurrentInputPosition = 0;
-            this.Inputs = new List<int>();
-            foreach (int input in inputs)
+            this.Inputs = new List<long>();
+            foreach (long input in inputs)
             {
                 this.ProvideInput(input);
             }
 
             this.Output = 0;
+        }
+
+        public IntcodeComputer(string name, int[] integers, params int[] inputs)
+            : this(name, integers.Select(n => (long)n).ToArray(), inputs.Select(n => (long)n).ToArray())
+        {
         }
 
         public IntcodeComputer(int[] integers, params int[] inputs)
@@ -37,18 +42,18 @@ namespace Pontemonti.AdventOfCode.Intcode
         {
         }
 
-        public int[] Integers { get; }
-        public int CurrentPosition { get; set; }
+        public long[] Program { get; }
+        public long CurrentPosition { get; set; }
         public int CurrentInputPosition { get; set; }
-        public List<int> Inputs { get; }
+        public List<long> Inputs { get; }
         public string Name { get; }
-        public int Output { get; set; }
+        public long Output { get; set; }
 
-        public event EventHandler<int> OutputSent;
+        public event EventHandler<long> OutputSent;
 
-        public int[] GetCurrentState() => this.Integers;
+        public long[] GetCurrentState() => this.Program;
 
-        public void ProvideInput(int input)
+        public void ProvideInput(long input)
         {
             this.Inputs.Add(input);
             int previousCount = this.semaphore.Release();
@@ -56,11 +61,11 @@ namespace Pontemonti.AdventOfCode.Intcode
             Console.WriteLine($"{this.Name}: Input {input} added to position {this.Inputs.Count}; semaphore previous count: {previousCount}.");
         }
 
-        public int ReadNextInput()
+        public long ReadNextInput()
         {
             if (this.semaphore.WaitOne(60 * 1000))
             {
-                int input = this.Inputs[this.CurrentInputPosition++];
+                long input = this.Inputs[this.CurrentInputPosition++];
                 Console.WriteLine($"{this.Name}: Input read: {input}; next input position: {this.CurrentInputPosition}");
                 return input;
             }
@@ -87,7 +92,7 @@ namespace Pontemonti.AdventOfCode.Intcode
             while (operation.Opcode != Opcode.Exit);
         }
 
-        internal void OnOutputSent(int output)
+        internal void OnOutputSent(long output)
         {
             // Store latest output in Output property
             Console.WriteLine($"{this.Name}: sent output {output}");
@@ -97,8 +102,8 @@ namespace Pontemonti.AdventOfCode.Intcode
 
         private Opcode GetOpcode()
         {
-            int opcodeNumberWithParameterModes = this.Integers[this.CurrentPosition];
-            int opcodeNumber = opcodeNumberWithParameterModes % 100;
+            long opcodeNumberWithParameterModes = this.Program[this.CurrentPosition];
+            long opcodeNumber = opcodeNumberWithParameterModes % 100;
             Opcode opcode = (Opcode)opcodeNumber;
             return opcode;
         }
@@ -136,7 +141,7 @@ namespace Pontemonti.AdventOfCode.Intcode
         {
             for (int i = 1; i <= numberOfParameters; i++)
             {
-                int parameterValue = this.Integers[this.CurrentPosition + i];
+                long parameterValue = this.Program[this.CurrentPosition + i];
                 ParameterMode parameterMode = this.GetParameterMode(i);
                 Parameter parameter = new Parameter(parameterMode, parameterValue);
                 yield return parameter;
@@ -148,9 +153,9 @@ namespace Pontemonti.AdventOfCode.Intcode
             int divideBy = (int)Math.Pow(10, parameterNumber + 1);
             int mod = divideBy * 10;
 
-            int operationValue = this.Integers[this.CurrentPosition];
-            int scopedToParameter = operationValue % mod;
-            int parameterModeValue = scopedToParameter / divideBy;
+            long operationValue = this.Program[this.CurrentPosition];
+            long scopedToParameter = operationValue % mod;
+            long parameterModeValue = scopedToParameter / divideBy;
             ParameterMode parameterMode = (ParameterMode)parameterModeValue;
             return parameterMode;
         }

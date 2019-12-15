@@ -79,16 +79,16 @@ namespace Pontemonti.AdventOfCode.Year2019
 
         public void Solve()
         {
-            int result = CalculateResult();
+            long result = CalculateResult();
             Console.WriteLine($"Diagnostic code: {result}");
         }
 
-        public static int CalculateResult()
+        public static long CalculateResult()
         {
             int[] integers = InputHelper.ReadIntegerCommaList(Day5Puzzle1.input).ToArray();
             IntcodeComputer intcodeComputer = new IntcodeComputer(integers, 5);
             intcodeComputer.Run();
-            int output = intcodeComputer.Output;
+            long output = intcodeComputer.Output;
             return output;
         }
     }

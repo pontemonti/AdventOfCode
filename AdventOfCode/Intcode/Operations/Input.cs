@@ -19,8 +19,9 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
         {
             // "Parameters that an instruction writes to will never be in immediate mode."
             // => Assume position mode
-            this.Integers[this.parameters[0].Value] = this.intcodeComputer.ReadNextInput();
-            Console.WriteLine($"{this.intcodeComputer.Name}: After input: {string.Join(",", this.intcodeComputer.Integers.Select(n => n.ToString()))}");
+            long inputValue = this.intcodeComputer.ReadNextInput();
+            this.Program[this.parameters[0].Value] = inputValue;
+            Console.WriteLine($"{this.intcodeComputer.Name}: After input: {string.Join(",", this.intcodeComputer.Program.Select(n => n.ToString()))}");
         }
     }
 }

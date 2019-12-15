@@ -17,12 +17,12 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
 
         public override int NumberOfParameters => 2;
 
-        protected void ExecuteJumpOperation(Func<int, bool> jumpPredicate)
+        protected void ExecuteJumpOperation(Func<long, bool> jumpPredicate)
         {
-            int n1 = this.GetParameter(0);
+            long n1 = this.GetParameter(0);
             if (jumpPredicate(n1))
             {
-                int n2 = this.GetParameter(1);
+                long n2 = this.GetParameter(1);
                 this.intcodeComputer.CurrentPosition = n2;
 
                 // We have jumped to a new position, so signal to the computer that we don't want to jump again

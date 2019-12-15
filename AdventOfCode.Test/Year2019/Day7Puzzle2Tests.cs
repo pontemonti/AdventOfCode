@@ -16,7 +16,7 @@ namespace Pontemonti.AdventOfCode.Test.Year2019
         {
             // Correct answer is 79846026
             int expectedResult = 79846026;
-            (int actualResult, _) = Day7Puzzle2.GetResult(InputHelper.ReadIntegerCommaList(Day7Puzzle1.input).ToArray());
+            (long actualResult, _) = Day7Puzzle2.GetResult(InputHelper.ReadIntegerCommaList(Day7Puzzle1.input).ToArray());
             Assert.AreEqual(expectedResult, actualResult);
         }
 
@@ -46,7 +46,7 @@ namespace Pontemonti.AdventOfCode.Test.Year2019
         private void TestGetResult(string programString, int expectedOutputSignal)
         {
             int[] program = InputHelper.ReadIntegerCommaList(programString).ToArray();
-            (int actualOutputSignal, int[] actualPhaseSettings) = Day7Puzzle2.GetResult(program);
+            (long actualOutputSignal, int[] actualPhaseSettings) = Day7Puzzle2.GetResult(program);
             Assert.AreEqual(expectedOutputSignal, actualOutputSignal);
         }
     }

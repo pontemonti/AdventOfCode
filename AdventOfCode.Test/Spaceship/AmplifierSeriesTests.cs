@@ -51,7 +51,7 @@ namespace Pontemonti.AdventOfCode.Test.Spaceship
             int[] program = InputHelper.ReadIntegerCommaList(programString).ToArray();
             int[] phaseSettings = InputHelper.ReadIntegerCommaList(phaseSettingsString).ToArray();
             AmplifierSeries amplifierSeries = new AmplifierSeries(program, phaseSettings);
-            int actualOutputSignal = amplifierSeries.GetOutputSignal();
+            long actualOutputSignal = amplifierSeries.GetOutputSignal();
             Assert.AreEqual(expectedOutputSignal, actualOutputSignal);
         }
     }

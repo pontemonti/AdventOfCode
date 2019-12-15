@@ -73,7 +73,7 @@ namespace Pontemonti.AdventOfCode.Year2019
             {
                 for (int verb = 0; verb <= 99; verb++)
                 {
-                    int result = CalculateOutput(noun, verb);
+                    long result = CalculateOutput(noun, verb);
                     if (result == 19690720)
                     {
                         return (noun, verb);
@@ -84,14 +84,14 @@ namespace Pontemonti.AdventOfCode.Year2019
             throw new InvalidOperationException();
         }
 
-        public static int CalculateOutput(int noun, int verb)
+        public static long CalculateOutput(int noun, int verb)
         {
             int[] integers = InputHelper.ReadIntegerCommaList(Day2Puzzle1.input).ToArray();
             integers[1] = noun;
             integers[2] = verb;
             IntcodeComputer intcodeComputer = new IntcodeComputer(integers);
             intcodeComputer.Run();
-            int[] endState = intcodeComputer.GetCurrentState();
+            long[] endState = intcodeComputer.GetCurrentState();
             return endState[0];
         }
     }

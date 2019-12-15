@@ -19,28 +19,28 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
         public abstract int NumberOfParameters { get; }
         public abstract Opcode Opcode { get; }
 
-        protected int[] Integers => this.intcodeComputer.Integers;
+        protected long[] Program => this.intcodeComputer.Program;
 
         public abstract void Execute();
 
-        protected void ExecuteIntegerOperation(Func<int, int, int> integerOperation)
+        protected void ExecuteIntegerOperation(Func<long, long, long> integerOperation)
         {
-            int n1 = this.GetParameter(0);
-            int n2 = this.GetParameter(1);
-            int result = integerOperation(n1, n2);
+            long n1 = this.GetParameter(0);
+            long n2 = this.GetParameter(1);
+            long result = integerOperation(n1, n2);
 
             // "Parameters that an instruction writes to will never be in immediate mode."
             // => Assume position mode
-            this.Integers[this.parameters[2].Value] = result;
+            this.Program[this.parameters[2].Value] = result;
         }
 
-        protected int GetParameter(int parameterNumber)
+        protected long GetParameter(int parameterNumber)
         {
             Parameter parameter = this.parameters[parameterNumber];
             switch (parameter.ParameterMode)
             {
                 case ParameterMode.PositionMode:
-                    return this.Integers[parameter.Value];
+                    return this.Program[parameter.Value];
                 case ParameterMode.ImmediateMode:
                     return parameter.Value;
                 default:

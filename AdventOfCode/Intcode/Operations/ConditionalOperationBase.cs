@@ -13,12 +13,12 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
 
         public override int NumberOfParameters => 3;
 
-        protected void ExecuteConditionalOperation(Func<int, int, bool> conditionalPredicate)
+        protected void ExecuteConditionalOperation(Func<long, long, bool> conditionalPredicate)
         {
-            int n1 = this.GetParameter(0);
-            int n2 = this.GetParameter(1);
-            int result = conditionalPredicate(n1, n2) ? 1 : 0;
-            this.Integers[this.parameters[2].Value] = result;
+            long n1 = this.GetParameter(0);
+            long n2 = this.GetParameter(1);
+            long result = conditionalPredicate(n1, n2) ? 1 : 0;
+            this.Program[this.parameters[2].Value] = result;
         }
     }
 }

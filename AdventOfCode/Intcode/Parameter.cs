@@ -6,16 +6,16 @@ namespace Pontemonti.AdventOfCode.Intcode
 {
     public struct Parameter
     {
-        public Parameter(ParameterMode parameterMode, int value)
+        public Parameter(ParameterMode parameterMode, long value)
         {
             this.ParameterMode = parameterMode;
             this.Value = value;
         }
 
         public readonly ParameterMode ParameterMode { get; }
-        public readonly int Value { get; }
+        public readonly long Value { get; }
 
-        public static ParameterMode GetParameterMode(int parameterMode)
+        public static ParameterMode GetParameterMode(long parameterMode)
         {
             return (ParameterMode)parameterMode;
         }

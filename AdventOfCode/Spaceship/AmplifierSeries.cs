@@ -40,19 +40,19 @@ namespace Pontemonti.AdventOfCode.Spaceship
             this.amplifiers = amplifiers.ToArray();
         }
 
-        public int GetOutputSignal()
+        public long GetOutputSignal()
         {
             // For the first amplifier, the input should be 0.
             this.amplifiers.First().IntcodeComputer.ProvideInput(0);
-            List<Task<int>> taskList = new List<Task<int>>();
+            List<Task<long>> taskList = new List<Task<long>>();
             foreach (Amplifier amplifier in this.amplifiers)
             {
-                Task<int> task = Task.Run<int>(() => amplifier.Run());
+                Task<long> task = Task.Run<long>(() => amplifier.Run());
                 taskList.Add(task);
             }
 
             Task.WaitAll(taskList.ToArray());
-            int outputSignal = taskList.Last().Result;
+            long outputSignal = taskList.Last().Result;
             return outputSignal;
         }
     }

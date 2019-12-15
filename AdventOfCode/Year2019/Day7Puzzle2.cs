@@ -67,19 +67,19 @@ namespace Pontemonti.AdventOfCode.Year2019
         public void Solve()
         {
             int[] program = InputHelper.ReadIntegerCommaList(Day7Puzzle1.input).ToArray();
-            (int result, _) = GetResult(program);
+            (long result, _) = GetResult(program);
             Console.WriteLine($"The highest signal that can be sent to the thrusters is {result}");
         }
 
-        public static (int, int[]) GetResult(int[] program)
+        public static (long, int[]) GetResult(int[] program)
         {
             IEnumerable<int>[] phaseSettingsPermutations = EnumerableHelper.GetPermutations(Enumerable.Range(5, 5)).ToArray();
-            int maxOutputSignal = 0;
+            long maxOutputSignal = 0;
             int[] maxPhaseSettings = new int[0];
             foreach (IEnumerable<int> phaseSettings in phaseSettingsPermutations)
             {
                 AmplifierSeries amplifierSeries = new AmplifierSeries(program, phaseSettings.ToArray(), useFeedback: true);
-                int outputSignal = amplifierSeries.GetOutputSignal();
+                long outputSignal = amplifierSeries.GetOutputSignal();
                 if (outputSignal > maxOutputSignal)
                 {
                     maxOutputSignal = outputSignal;

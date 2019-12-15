@@ -14,7 +14,7 @@ namespace Pontemonti.AdventOfCode.Test.Year2019
         {
             // Correct answer is 9217546
             int expectedResult = 9217546;
-            int actualResult = Day5Puzzle2.CalculateResult();
+            long actualResult = Day5Puzzle2.CalculateResult();
             Assert.AreEqual(expectedResult, actualResult);
         }
     }

@@ -20,7 +20,7 @@ namespace Pontemonti.AdventOfCode.Spaceship
 
         public IntcodeComputer IntcodeComputer { get; }
 
-        public int Run()
+        public long Run()
         {
             this.IntcodeComputer.Run();
             return this.IntcodeComputer.Output;
@@ -32,7 +32,7 @@ namespace Pontemonti.AdventOfCode.Spaceship
             this.IntcodeComputer.OutputSent += this.IntcodeComputerOutputSent;
         }
 
-        private void IntcodeComputerOutputSent(object? sender, int outputSignal)
+        private void IntcodeComputerOutputSent(object? sender, long outputSignal)
         {
             this.nextAmplifier.IntcodeComputer.ProvideInput(outputSignal);
         }

@@ -86,18 +86,18 @@ namespace Pontemonti.AdventOfCode.Year2019
 
         public void Solve()
         {
-            int result = CalculateResult();
+            long result = CalculateResult();
             Console.WriteLine($"Value at position 0: {result}");
         }
 
-        public static int CalculateResult()
+        public static long CalculateResult()
         {
             int[] integers = InputHelper.ReadIntegerCommaList(input).ToArray();
             integers[1] = 12;
             integers[2] = 2;
             IntcodeComputer intcodeComputer = new IntcodeComputer(integers);
             intcodeComputer.Run();
-            int[] endState = intcodeComputer.GetCurrentState();
+            long[] endState = intcodeComputer.GetCurrentState();
             return endState[0];
         }
     }

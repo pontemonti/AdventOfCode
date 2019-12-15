@@ -65,7 +65,7 @@ namespace Pontemonti.AdventOfCode.Test.Intcode
             int[] inputIntegers = InputHelper.ReadIntegerCommaList(operations).ToArray();
             IntcodeComputer intcodeComputer = new IntcodeComputer(inputIntegers, input);
             intcodeComputer.Run();
-            int output = intcodeComputer.Output;
+            long output = intcodeComputer.Output;
             Assert.AreEqual(input, output);
         }
 
@@ -74,7 +74,7 @@ namespace Pontemonti.AdventOfCode.Test.Intcode
             int[] inputIntegers = InputHelper.ReadIntegerCommaList(input).ToArray();
             IntcodeComputer intcodeComputer = new IntcodeComputer(inputIntegers);
             intcodeComputer.Run();
-            int[] endState = intcodeComputer.GetCurrentState();
+            long[] endState = intcodeComputer.GetCurrentState();
             string actualEndState = string.Join(",", endState);
 
             Assert.AreEqual(expectedEndState, actualEndState);
