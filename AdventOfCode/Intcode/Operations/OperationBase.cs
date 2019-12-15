@@ -43,6 +43,8 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
                     return this.Program[parameter.Value];
                 case ParameterMode.ImmediateMode:
                     return parameter.Value;
+                case ParameterMode.RelativeMode:
+                    return this.intcodeComputer.RelativeBasePosition + this.Program[parameter.Value];
                 default:
                     throw new InvalidOperationException();
             }
