@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Pontemonti.AdventOfCode.Image;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Pontemonti.AdventOfCode.Year2019
@@ -49,6 +51,42 @@ namespace Pontemonti.AdventOfCode.Year2019
     /// </summary>
     public class Day8Puzzle2 : IPuzzle
     {
-        public void Solve() => throw new NotImplementedException();
+        public void Solve()
+        {
+            Console.WriteLine($"Visible digits:");
+            int[] visiblePixels = GetResult();
+            WriteImageToConsole(visiblePixels);
+        }
+
+        public static int[] GetResult()
+        {
+            SpaceImageFormat spaceImage = SpaceImageFormat.ParseSpaceImage(Day8Puzzle1.input, Day8Puzzle1.inputImageWidth, Day8Puzzle1.inputImageHeight);
+            int[] visiblePixels = spaceImage.GetVisiblePixels();
+            return visiblePixels;
+        }
+
+        public static void WriteImageToConsole(int[] visiblePixels)
+        {
+            // For the current input, this writes "AGUEB"
+            for (int row = 0; row < Day8Puzzle1.inputImageHeight; row++)
+            {
+                for (int column = 0; column < Day8Puzzle1.inputImageWidth; column++)
+                {
+                    int pixel = visiblePixels[row * Day8Puzzle1.inputImageWidth + column];
+                    if (pixel == (int)SpaceImageColors.Black)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                    }
+                    else if (pixel == (int)SpaceImageColors.White)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                    }
+
+                    Console.Write(" ");
+                }
+
+                Console.WriteLine();
+            }
+        }
     }
 }

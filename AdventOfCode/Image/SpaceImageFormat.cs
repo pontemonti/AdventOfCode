@@ -55,6 +55,25 @@ namespace Pontemonti.AdventOfCode.Image
             return checksum;
         }
 
+        public int[] GetVisiblePixels()
+        {
+            int numberOfPixels = this.Width * this.Height;
+            int[] visiblePixels = Enumerable.Repeat((int)SpaceImageColors.Transparent, numberOfPixels).ToArray();
+            foreach (SpaceImageLayer layer in this.Layers)
+            {
+                int[] layerData = layer.Data;
+                for (int i = 0; i < layerData.Length; i++)
+                {
+                    if (visiblePixels[i] == (int)SpaceImageColors.Transparent)
+                    {
+                        visiblePixels[i] = layerData[i];
+                    }
+                }
+            }
+
+            return visiblePixels;
+        }
+
         private IEnumerable<SpaceImageLayer> GetLayers()
         {
             int digitsPerLayer = this.Width * this.Height;
