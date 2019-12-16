@@ -9,6 +9,26 @@ namespace Pontemonti.AdventOfCode.Utilities
     {
         public const char Comma = ',';
 
+        public static AsteroidMap ReadAsteroidMap(string input)
+        {
+            List<Point> asteroidPositions = new List<Point>();
+            string[] inputLines = input.Split(Environment.NewLine);
+            for (int y = 0; y < inputLines.Length; y++)
+            {
+                for (int x = 0; x < inputLines[y].Length; x++)
+                {
+                    if (inputLines[y][x] == '#')
+                    {
+                        Point asteroidPosition = new Point(x, y);
+                        asteroidPositions.Add(asteroidPosition);
+                    }
+                }
+            }
+
+            AsteroidMap asteroidMap = new AsteroidMap(asteroidPositions.ToArray());
+            return asteroidMap;
+        }
+
         public static IEnumerable<int> ReadIntegerLines(string input)
         {
             string[] inputLines = input.Split(Environment.NewLine);
