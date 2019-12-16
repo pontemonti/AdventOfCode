@@ -25,7 +25,7 @@ namespace Pontemonti.AdventOfCode
             int year = defaultYear;
             int day = defaultDay;
             int puzzle = defaultPuzzle;
-            string puzzleName = $"{year}.Day{day}Puzzle{puzzle}";
+            string puzzleName = $"{year}.Day{day:00}Puzzle{puzzle}";
             return puzzleName;
         }
 
