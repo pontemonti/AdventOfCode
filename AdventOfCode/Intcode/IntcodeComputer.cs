@@ -65,6 +65,20 @@ namespace Pontemonti.AdventOfCode.Intcode
 
         public long ReadFromMemory(long position)
         {
+            // The computer's available memory should be much larger than the initial 
+            // program. Memory beyond the initial program starts with the value 0 and 
+            // can be read or written like any other memory. (It is invalid to try to 
+            // access memory at a negative address, though.)
+            if (position < 0)
+            {
+                throw new ArgumentOutOfRangeException($"Tried to access memory at position {position}, which is less than 0 and therefore not allowed.");
+            }
+
+            if (position >= this.program.Length)
+            {
+                return 0;
+            }
+
             return this.program[position];
         }
 
@@ -88,6 +102,7 @@ namespace Pontemonti.AdventOfCode.Intcode
             do
             {
                 operation = this.GetOperation();
+                Console.WriteLine($"Executing operation {operation.Opcode}...");
                 operation.Execute();
 
                 // This is used for Jump operations, where we don't want to jump again if we've just jumped.
@@ -103,13 +118,14 @@ namespace Pontemonti.AdventOfCode.Intcode
         {
             if (position >= this.program.Length)
             {
-                long[] doubleProgram = new long[this.program.Length * 2];
+                long newLength = Math.Max(this.program.Length, position) * 2;
+                long[] largerProgram = new long[newLength];
                 for (int i = 0; i < this.program.Length; i++)
                 {
-                    doubleProgram[i] = this.program[i];
+                    largerProgram[i] = this.program[i];
                 }
 
-                this.program = doubleProgram;
+                this.program = largerProgram;
             }
 
             this.program[position] = value;

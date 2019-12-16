@@ -27,6 +27,15 @@ namespace Pontemonti.AdventOfCode.Utilities
             }
         }
 
+        public static IEnumerable<long> ReadInt64CommaList(string input)
+        {
+            string[] integerList = input.Split(Comma);
+            foreach (string integer in integerList)
+            {
+                yield return long.Parse(integer);
+            }
+        }
+
         public static IEnumerable<(string, string)> ReadOrbitPairLines(string input)
         {
             string[] orbitPairList = input.Split(Environment.NewLine);

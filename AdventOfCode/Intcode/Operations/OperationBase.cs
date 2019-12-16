@@ -42,7 +42,7 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
                 case ParameterMode.ImmediateMode:
                     return parameter.Value;
                 case ParameterMode.RelativeMode:
-                    return this.intcodeComputer.RelativeBasePosition + this.intcodeComputer.ReadFromMemory(parameter.Value);
+                    return this.intcodeComputer.ReadFromMemory(this.intcodeComputer.RelativeBasePosition + parameter.Value);
                 default:
                     throw new InvalidOperationException();
             }

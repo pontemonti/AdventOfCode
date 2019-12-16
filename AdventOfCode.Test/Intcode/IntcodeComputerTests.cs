@@ -11,6 +11,13 @@ namespace Pontemonti.AdventOfCode.Test.Intcode
     [TestClass]
     public class IntcodeComputerTests
     {
+        private List<long> outputs;
+
+        public IntcodeComputerTests()
+        {
+            this.outputs = new List<long>();
+        }
+
         [TestMethod]
         public void Test1Plus1ShouldResultIn2()
         {
@@ -69,15 +76,53 @@ namespace Pontemonti.AdventOfCode.Test.Intcode
             Assert.AreEqual(input, output);
         }
 
+        [TestMethod]
+        public void TestCopyProgramToOutput()
+        {
+            const string programString = "109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99";
+            long[] program = InputHelper.ReadInt64CommaList(programString).ToArray();
+            IntcodeComputer intcodeComputer = new IntcodeComputer("CopyProgram", program);
+            intcodeComputer.OutputSent += this.IntcodeComputerOutputSent;
+            intcodeComputer.Run();
+            CollectionAssert.AreEqual(program, this.outputs);
+        }
+
+        [TestMethod]
+        public void TestOuput16DigitNumber()
+        {
+            const string programString = "1102,34915192,34915192,7,4,7,99,0";
+            long[] program = InputHelper.ReadInt64CommaList(programString).ToArray();
+            IntcodeComputer intcodeComputer = new IntcodeComputer("CopyProgram", program);
+            intcodeComputer.OutputSent += this.IntcodeComputerOutputSent;
+            intcodeComputer.Run();
+            long expectedOutput = 1219070632396864;
+            Assert.AreEqual(expectedOutput, this.outputs[0]);
+        }
+
+        [TestMethod]
+        public void TestOutputInt64Number()
+        {
+            const string programString = "104,1125899906842624,99";
+            long[] program = InputHelper.ReadInt64CommaList(programString).ToArray();
+            IntcodeComputer intcodeComputer = new IntcodeComputer("CopyProgram", program);
+            intcodeComputer.OutputSent += this.IntcodeComputerOutputSent;
+            intcodeComputer.Run();
+            long expectedOutput = 1125899906842624;
+            Assert.AreEqual(expectedOutput, this.outputs[0]);
+        }
+
         private void TestIntcodeComputer(string input, string expectedEndState)
         {
             int[] inputIntegers = InputHelper.ReadIntegerCommaList(input).ToArray();
             IntcodeComputer intcodeComputer = new IntcodeComputer(inputIntegers);
+            intcodeComputer.OutputSent += this.IntcodeComputerOutputSent;
             intcodeComputer.Run();
             long[] endState = intcodeComputer.GetCurrentState();
             string actualEndState = string.Join(",", endState);
 
             Assert.AreEqual(expectedEndState, actualEndState);
         }
+
+        private void IntcodeComputerOutputSent(object sender, long e) => this.outputs.Add(e);
     }
 }

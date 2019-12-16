@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Pontemonti.AdventOfCode.Intcode;
 using System;
 using System.Collections.Generic;
 using System.Text;
