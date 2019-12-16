@@ -10,12 +10,13 @@ namespace Pontemonti.AdventOfCode.Intcode
     public class IntcodeComputer
     {
         private Semaphore semaphore;
+        private long[] program;
 
         public IntcodeComputer(string name, long[] program, params long[] inputs)
         {
             this.Name = name;
             this.semaphore = new Semaphore(0, 100);
-            this.Program = program;
+            this.program = program;
             this.CurrentPosition = 0;
             this.CurrentInputPosition = 0;
             this.RelativeBasePosition = 0;
@@ -43,7 +44,6 @@ namespace Pontemonti.AdventOfCode.Intcode
         {
         }
 
-        public long[] Program { get; }
         public long CurrentPosition { get; set; }
         public int CurrentInputPosition { get; set; }
         public List<long> Inputs { get; }
@@ -53,7 +53,7 @@ namespace Pontemonti.AdventOfCode.Intcode
 
         public event EventHandler<long> OutputSent;
 
-        public long[] GetCurrentState() => this.Program;
+        public long[] GetCurrentState() => this.program;
 
         public void ProvideInput(long input)
         {
@@ -61,6 +61,11 @@ namespace Pontemonti.AdventOfCode.Intcode
             int previousCount = this.semaphore.Release();
             
             Console.WriteLine($"{this.Name}: Input {input} added to position {this.Inputs.Count}; semaphore previous count: {previousCount}.");
+        }
+
+        public long ReadFromMemory(long position)
+        {
+            return this.program[position];
         }
 
         public long ReadNextInput()
@@ -94,6 +99,22 @@ namespace Pontemonti.AdventOfCode.Intcode
             while (operation.Opcode != Opcode.Exit);
         }
 
+        public void WriteToMemory(long position, long value)
+        {
+            if (position >= this.program.Length)
+            {
+                long[] doubleProgram = new long[this.program.Length * 2];
+                for (int i = 0; i < this.program.Length; i++)
+                {
+                    doubleProgram[i] = this.program[i];
+                }
+
+                this.program = doubleProgram;
+            }
+
+            this.program[position] = value;
+        }
+
         internal void OnOutputSent(long output)
         {
             // Store latest output in Output property
@@ -104,7 +125,7 @@ namespace Pontemonti.AdventOfCode.Intcode
 
         private Opcode GetOpcode()
         {
-            long opcodeNumberWithParameterModes = this.Program[this.CurrentPosition];
+            long opcodeNumberWithParameterModes = this.program[this.CurrentPosition];
             long opcodeNumber = opcodeNumberWithParameterModes % 100;
             Opcode opcode = (Opcode)opcodeNumber;
             return opcode;
@@ -145,7 +166,7 @@ namespace Pontemonti.AdventOfCode.Intcode
         {
             for (int i = 1; i <= numberOfParameters; i++)
             {
-                long parameterValue = this.Program[this.CurrentPosition + i];
+                long parameterValue = this.program[this.CurrentPosition + i];
                 ParameterMode parameterMode = this.GetParameterMode(i);
                 Parameter parameter = new Parameter(parameterMode, parameterValue);
                 yield return parameter;
@@ -157,7 +178,7 @@ namespace Pontemonti.AdventOfCode.Intcode
             int divideBy = (int)Math.Pow(10, parameterNumber + 1);
             int mod = divideBy * 10;
 
-            long operationValue = this.Program[this.CurrentPosition];
+            long operationValue = this.program[this.CurrentPosition];
             long scopedToParameter = operationValue % mod;
             long parameterModeValue = scopedToParameter / divideBy;
             ParameterMode parameterMode = (ParameterMode)parameterModeValue;

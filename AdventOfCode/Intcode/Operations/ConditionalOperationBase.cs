@@ -18,7 +18,7 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
             long n1 = this.GetParameter(0);
             long n2 = this.GetParameter(1);
             long result = conditionalPredicate(n1, n2) ? 1 : 0;
-            this.Program[this.parameters[2].Value] = result;
+            this.intcodeComputer.WriteToMemory(this.parameters[2].Value, result);
         }
     }
 }

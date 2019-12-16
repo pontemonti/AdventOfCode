@@ -19,8 +19,6 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
         public abstract int NumberOfParameters { get; }
         public abstract Opcode Opcode { get; }
 
-        protected long[] Program => this.intcodeComputer.Program;
-
         public abstract void Execute();
 
         protected void ExecuteIntegerOperation(Func<long, long, long> integerOperation)
@@ -31,7 +29,7 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
 
             // "Parameters that an instruction writes to will never be in immediate mode."
             // => Assume position mode
-            this.Program[this.parameters[2].Value] = result;
+            this.intcodeComputer.WriteToMemory(this.parameters[2].Value, result);
         }
 
         protected long GetParameter(int parameterNumber)
@@ -40,11 +38,11 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
             switch (parameter.ParameterMode)
             {
                 case ParameterMode.PositionMode:
-                    return this.Program[parameter.Value];
+                    return this.intcodeComputer.ReadFromMemory(parameter.Value);
                 case ParameterMode.ImmediateMode:
                     return parameter.Value;
                 case ParameterMode.RelativeMode:
-                    return this.intcodeComputer.RelativeBasePosition + this.Program[parameter.Value];
+                    return this.intcodeComputer.RelativeBasePosition + this.intcodeComputer.ReadFromMemory(parameter.Value);
                 default:
                     throw new InvalidOperationException();
             }
