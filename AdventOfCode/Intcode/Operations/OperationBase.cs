@@ -29,7 +29,8 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
 
             // "Parameters that an instruction writes to will never be in immediate mode."
             // => Assume position mode
-            this.intcodeComputer.WriteToMemory(this.parameters[2].Value, result);
+            long position = this.GetParameterToWriteTo(2);
+            this.intcodeComputer.WriteToMemory(position, result);
         }
 
         protected long GetParameter(int parameterNumber)
@@ -43,6 +44,20 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
                     return parameter.Value;
                 case ParameterMode.RelativeMode:
                     return this.intcodeComputer.ReadFromMemory(this.intcodeComputer.RelativeBasePosition + parameter.Value);
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+
+        protected long GetParameterToWriteTo(int parameterNumber)
+        {
+            Parameter parameter = this.parameters[parameterNumber];
+            switch (parameter.ParameterMode)
+            {
+                case ParameterMode.PositionMode:
+                    return parameter.Value;
+                case ParameterMode.RelativeMode:
+                    return this.intcodeComputer.RelativeBasePosition + parameter.Value;
                 default:
                     throw new InvalidOperationException();
             }

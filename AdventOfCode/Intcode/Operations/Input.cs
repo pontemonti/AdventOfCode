@@ -20,7 +20,8 @@ namespace Pontemonti.AdventOfCode.Intcode.Operations
             // "Parameters that an instruction writes to will never be in immediate mode."
             // => Assume position mode
             long inputValue = this.intcodeComputer.ReadNextInput();
-            this.intcodeComputer.WriteToMemory(this.parameters[0].Value, inputValue);
+            long writeToPosition = this.GetParameterToWriteTo(0);
+            this.intcodeComputer.WriteToMemory(writeToPosition, inputValue);
         }
     }
 }
