@@ -15,9 +15,10 @@ namespace Pontemonti.AdventOfCode.Utilities
             string[] inputLines = input.Split(Environment.NewLine);
             for (int y = 0; y < inputLines.Length; y++)
             {
-                for (int x = 0; x < inputLines[y].Length; x++)
+                string line = inputLines[y];
+                for (int x = 0; x < line.Length; x++)
                 {
-                    if (inputLines[y][x] == '#')
+                    if (line[x] == '#')
                     {
                         Point asteroidPosition = new Point(x, y);
                         asteroidPositions.Add(asteroidPosition);
