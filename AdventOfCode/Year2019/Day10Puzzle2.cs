@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Pontemonti.AdventOfCode.Geometry;
+using Pontemonti.AdventOfCode.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -86,6 +88,19 @@ namespace Pontemonti.AdventOfCode.Year2019
     /// </summary>
     public class Day10Puzzle2 : IPuzzle
     {
-        public void Solve() => throw new NotImplementedException();
+        public void Solve()
+        {
+            int result = CalculateResult(Day10Puzzle1.input);
+            Console.WriteLine($"Result: {result}");
+        }
+
+        public static int CalculateResult(string mapString)
+        {
+            AsteroidMap asteroidMap = InputHelper.ReadAsteroidMap(mapString);
+            Asteroid asteroidWithMostVisibleAsteroids = asteroidMap.GetAsteroidWithMostVisibleAsteroids();
+            Asteroid asteroid200 = asteroidMap.FindAsteroidAtPositionInVaporizationList(asteroidWithMostVisibleAsteroids, 199);
+            int result = asteroid200.Position.X * 100 + asteroid200.Position.Y;
+            return result;
+        }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Pontemonti.AdventOfCode.Geometry
 {
+    [DebuggerDisplay("X = {Position.X}; Y = {Position.Y}")]
     public class Asteroid
     {
         public Asteroid(Point position)

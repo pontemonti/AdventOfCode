@@ -10,6 +10,27 @@ namespace Pontemonti.AdventOfCode.Test.Year2019
     [TestClass]
     public class Day10Puzzle1Tests
     {
+        public const string largestExampleMap = @".#..##.###...#######
+##.############..##.
+.#.######.########.#
+.###.#######.####.#.
+#####.##.#.##.###.##
+..#####..#.#########
+####################
+#.####....###.#.#.##
+##.#################
+#####.##.###..####..
+..######..##.#######
+####.##.####...##..#
+.#####..#.######.###
+##...#.##########...
+#.##########.#######
+.####.#.###.###.#.##
+....##.##.###..#####
+.#.#.###########.###
+#.#.#.#####.####.###
+###.##.####.##.#..##";
+
         [TestMethod]
         public void TestSolve()
         {
@@ -93,30 +114,10 @@ namespace Pontemonti.AdventOfCode.Test.Year2019
         [TestMethod]
         public void TestBestResultIs210()
         {
-            const string map = @".#..##.###...#######
-##.############..##.
-.#.######.########.#
-.###.#######.####.#.
-#####.##.#.##.###.##
-..#####..#.#########
-####################
-#.####....###.#.#.##
-##.#################
-#####.##.###..####..
-..######..##.#######
-####.##.####...##..#
-.#####..#.######.###
-##...#.##########...
-#.##########.#######
-.####.#.###.###.#.##
-....##.##.###..#####
-.#.#.###########.###
-#.#.#.#####.####.###
-###.##.####.##.#..##";
             const int expectedPositionX = 11;
             const int expectedPositionY = 13;
             const int expectedBestResult = 210;
-            this.Test(map, expectedPositionX, expectedPositionY, expectedBestResult);
+            this.Test(largestExampleMap, expectedPositionX, expectedPositionY, expectedBestResult);
         }
 
         private void Test(string map, int expectedPositionX, int expectedPositionY, int expectedBestResult)

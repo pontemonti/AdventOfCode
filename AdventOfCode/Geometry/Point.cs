@@ -54,5 +54,8 @@ namespace Pontemonti.AdventOfCode.Geometry
         {
             return this.X ^ this.Y;
         }
+
+        internal object CalculateDistanceTo(Point otherPoint)
+            => Math.Sqrt(Math.Pow(otherPoint.X - this.X, 2) + Math.Pow(otherPoint.Y - this.Y, 2));
     }
 }
