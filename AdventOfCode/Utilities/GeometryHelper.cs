@@ -8,6 +8,39 @@ namespace Pontemonti.AdventOfCode.Utilities
 {
     public class GeometryHelper
     {
+        public static System.Drawing.Rectangle CalculateBounds(IEnumerable<Point> points)
+        {
+            int minX = 0;
+            int maxX = 0;
+            int minY = 0;
+            int maxY = 0;
+            foreach (Point point in points)
+            {
+                if (point.X < minX)
+                {
+                    minX = point.X;
+                }
+
+                if (point.X > maxX)
+                {
+                    maxX = point.X;
+                }
+
+                if (point.Y < minY)
+                {
+                    minY = point.Y;
+                }
+
+                if (point.Y > maxY)
+                {
+                    maxY = point.Y;
+                }
+            }
+
+            System.Drawing.Rectangle rectangle = new System.Drawing.Rectangle(minX, maxY, maxX - minX, maxY - minY);
+            return rectangle;
+        }
+
         public static int CalculateManhattanDistance(Point point1, Point point2)
         {
             int xDistance = point2.X - point1.X;

@@ -27,12 +27,20 @@ namespace Pontemonti.AdventOfCode.Spaceship
         }
 
         public int NumberOfPaintedPanels => this.paintedPositions.Keys.Count;
+        public Dictionary<Point, SpaceImageColors> PaintedPanels => this.paintedPositions;
 
         public static HullPaintingRobot CreateRobot(string programString)
         {
             long[] program = InputHelper.ReadInt64CommaList(programString).ToArray();
             IntcodeComputer intcodeComputer = new IntcodeComputer("HullPaintingRobot", program);
             HullPaintingRobot robot = new HullPaintingRobot(intcodeComputer);
+            return robot;
+        }
+
+        public static HullPaintingRobot CreateRobot(string programString, SpaceImageColors startingColor)
+        {
+            HullPaintingRobot robot = CreateRobot(programString);
+            robot.paintedPositions.Add(robot.currentPosition, startingColor);
             return robot;
         }
 
