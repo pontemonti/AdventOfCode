@@ -1,6 +1,6 @@
 ﻿namespace Pontemonti.AdventOfCode
 {
-    public enum WireDirection
+    public enum Direction
     {
         Up,
         Down,

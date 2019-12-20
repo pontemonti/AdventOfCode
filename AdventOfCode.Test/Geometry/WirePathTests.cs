@@ -112,7 +112,7 @@ namespace Pontemonti.AdventOfCode.Test.Geometry
         public void TestParseR75ShouldReturnWirePathWithDirectionRightAndDistance75()
         {
             const string wirePathString = "R75";
-            const WireDirection expectedWireDirection = WireDirection.Right;
+            const Direction expectedWireDirection = Direction.Right;
             const int expectedDistance = 75;
             this.TestParse(wirePathString, expectedWireDirection, expectedDistance);
         }
@@ -121,7 +121,7 @@ namespace Pontemonti.AdventOfCode.Test.Geometry
         public void TestParseD30ShouldReturnWirePathWithDirectionDownAndDistance30()
         {
             const string wirePathString = "D30";
-            const WireDirection expectedWireDirection = WireDirection.Down;
+            const Direction expectedWireDirection = Direction.Down;
             const int expectedDistance = 30;
             this.TestParse(wirePathString, expectedWireDirection, expectedDistance);
         }
@@ -130,7 +130,7 @@ namespace Pontemonti.AdventOfCode.Test.Geometry
         public void TestParseU8ShouldReturnWirePathWithDirectionUpAndDistance8()
         {
             const string wirePathString = "U8";
-            const WireDirection expectedWireDirection = WireDirection.Up;
+            const Direction expectedWireDirection = Direction.Up;
             const int expectedDistance = 8;
             this.TestParse(wirePathString, expectedWireDirection, expectedDistance);
         }
@@ -139,12 +139,12 @@ namespace Pontemonti.AdventOfCode.Test.Geometry
         public void TestParseL12ShouldReturnWirePathWithDirectionLeftAndDistance12()
         {
             const string wirePathString = "L12";
-            const WireDirection expectedWireDirection = WireDirection.Left;
+            const Direction expectedWireDirection = Direction.Left;
             const int expectedDistance = 12;
             this.TestParse(wirePathString, expectedWireDirection, expectedDistance);
         }
 
-        private void TestParse(string wirePathString, WireDirection expectedDirection, int expectedDistance)
+        private void TestParse(string wirePathString, Direction expectedDirection, int expectedDistance)
         {
             WirePath wirePath = WirePath.Parse(wirePathString);
             Assert.AreEqual(expectedDirection, wirePath.WireDirection);

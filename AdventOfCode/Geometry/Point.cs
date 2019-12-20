@@ -15,22 +15,22 @@ namespace Pontemonti.AdventOfCode.Geometry
         public readonly int X { get; }
         public readonly int Y { get; }
 
-        public Point GetNewPointOneStepInDirection(WireDirection wireDirection)
+        public Point GetNewPointOneStepInDirection(Direction wireDirection)
         {
             int x = this.X;
             int y = this.Y;
             switch(wireDirection)
             {
-                case WireDirection.Up:
+                case Direction.Up:
                     y++;
                     break;
-                case WireDirection.Down:
+                case Direction.Down:
                     y--;
                     break;
-                case WireDirection.Left:
+                case Direction.Left:
                     x--;
                     break;
-                case WireDirection.Right:
+                case Direction.Right:
                     x++;
                     break;
                 default:

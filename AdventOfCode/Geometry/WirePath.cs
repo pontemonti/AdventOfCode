@@ -12,20 +12,20 @@ namespace Pontemonti.AdventOfCode.Geometry
         public const char LeftDirectionCharacter = 'L';
         public const char RightDirectionCharacter = 'R';
 
-        public WirePath(WireDirection wireDirection, int distance)
+        public WirePath(Direction wireDirection, int distance)
         {
             this.WireDirection = wireDirection;
             this.Distance = distance;
         }
 
-        public readonly WireDirection WireDirection { get; }
+        public readonly Direction WireDirection { get; }
         public readonly int Distance { get; }
 
         public static WirePath Parse(string wirePathString)
         {
             wirePathString = wirePathString.Trim();
             char directionCharacter = wirePathString.First();
-            WireDirection wireDirection = ParseDirectionCharacter(directionCharacter);
+            Direction wireDirection = ParseDirectionCharacter(directionCharacter);
 
             string distanceString = wirePathString.Substring(1);
             int distance = int.Parse(distanceString);
@@ -47,18 +47,18 @@ namespace Pontemonti.AdventOfCode.Geometry
             }
         }
 
-        public static WireDirection ParseDirectionCharacter(char directionCharacter)
+        public static Direction ParseDirectionCharacter(char directionCharacter)
         {
             switch (directionCharacter)
             {
                 case UpDirectionCharacter:
-                    return WireDirection.Up;
+                    return Direction.Up;
                 case DownDirectionCharacter:
-                    return WireDirection.Down;
+                    return Direction.Down;
                 case LeftDirectionCharacter:
-                    return WireDirection.Left;
+                    return Direction.Left;
                 case RightDirectionCharacter:
-                    return WireDirection.Right;
+                    return Direction.Right;
                 default:
                     throw new InvalidOperationException();
             }
