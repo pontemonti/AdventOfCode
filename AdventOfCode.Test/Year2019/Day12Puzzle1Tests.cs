@@ -11,10 +11,15 @@ namespace Pontemonti.AdventOfCode.Test.Year2019
     [TestClass]
     public class Day12Puzzle1Tests
     {
-        private const string exampleInput = @"<x=-1, y=0, z=2>
+        public const string example1Input = @"<x=-1, y=0, z=2>
 <x=2, y=-10, z=-7>
 <x=4, y=-8, z=8>
 <x=3, y=5, z=-1>";
+
+        public const string example2Input = @"<x=-8, y=-10, z=0>
+<x=5, y=5, z=10>
+<x=2, y=-7, z=3>
+<x=9, y=-8, z=-3>";
 
         [TestMethod]
         public void TestSolve()
@@ -127,7 +132,7 @@ namespace Pontemonti.AdventOfCode.Test.Year2019
 
         private void TestExample(int numberOfSteps, Moon[] expectedMoonStates)
         {
-            JupiterMoons jupiterMoons = InputHelper.ReadJupiterMoons(exampleInput);
+            JupiterMoons jupiterMoons = InputHelper.ReadJupiterMoons(example1Input);
             jupiterMoons.RunSteps(numberOfSteps);
             Moon[] actualMoonStates = jupiterMoons.Moons;
             for (int i = 0; i < actualMoonStates.Length; i++)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pontemonti.AdventOfCode.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,13 +8,41 @@ namespace Pontemonti.AdventOfCode.Geometry
 {
     public class JupiterMoons
     {
+        private Moon[] initialMoonStates;
+
         public JupiterMoons(IEnumerable<Moon> moons)
         {
+            this.initialMoonStates = moons.Select(moon => moon.Clone()).ToArray();
             this.Moons = moons.ToArray();
         }
 
-        public Moon[] Moons { get; }
+        public Moon[] Moons { get; private set; }
         public int TotalEnergy => this.Moons.Sum(moon => moon.TotalEnergy);
+
+        public long FindNumberOfStepsToRepeatState()
+        {
+            // Calculate by finding the number of steps to velocity zero for all moons
+            // This is halfways (i.e. half a rotation), so multiply by two.
+            this.ResetState();
+            long numberOfStepsX = this.FindNumberOfStepsToVelocityZero(moon => moon.VelocityX);
+            Console.WriteLine($"Number of X steps to velocity 0: {numberOfStepsX}");
+
+            this.ResetState();
+            long numberOfStepsY = this.FindNumberOfStepsToVelocityZero(moon => moon.VelocityY);
+            Console.WriteLine($"Number of Y steps to velocity 0: {numberOfStepsY}");
+
+            this.ResetState();
+            long numberOfStepsZ = this.FindNumberOfStepsToVelocityZero(moon => moon.VelocityZ);
+            Console.WriteLine($"Number of Z steps to velocity 0: {numberOfStepsZ}");
+
+            double numberOfStepsToHalf = MathHelper.LeastCommonMultiple(numberOfStepsX, MathHelper.LeastCommonMultiple(numberOfStepsY, numberOfStepsZ));
+            return (long)numberOfStepsToHalf * 2;
+        }
+
+        public void ResetState()
+        {
+            this.Moons = this.initialMoonStates.Select(moon => moon.Clone()).ToArray();
+        }
 
         public void RunOneStep()
         {
@@ -69,6 +98,20 @@ namespace Pontemonti.AdventOfCode.Geometry
                 moon.Y += moon.VelocityY;
                 moon.Z += moon.VelocityZ;
             }
+        }
+
+        private long FindNumberOfStepsToVelocityZero(Func<Moon, int> getVelocityFunction)
+        {
+            long numberOfSteps = 0;
+            bool isVelocityZeroFound = false;
+            while (!isVelocityZeroFound)
+            {
+                this.RunOneStep();
+                numberOfSteps++;
+                isVelocityZeroFound = this.Moons.All(moon => getVelocityFunction(moon) == 0);
+            }
+
+            return numberOfSteps;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Pontemonti.AdventOfCode.Geometry;
+using Pontemonti.AdventOfCode.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -56,6 +58,17 @@ namespace Pontemonti.AdventOfCode.Year2019
     /// </summary>
     public class Day12Puzzle2 : IPuzzle
     {
-        public void Solve() => throw new NotImplementedException();
+        public void Solve()
+        {
+            long result = CalculateResult();
+            Console.WriteLine($"Number of steps to reach a previous state: {result}");
+        }
+
+        public static long CalculateResult()
+        {
+            JupiterMoons jupiterMoons = InputHelper.ReadJupiterMoons(Day12Puzzle1.input);
+            long numberOfStepsToRepeatState = jupiterMoons.FindNumberOfStepsToRepeatState();
+            return numberOfStepsToRepeatState;
+        }
     }
 }

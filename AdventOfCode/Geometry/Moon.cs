@@ -31,6 +31,9 @@ namespace Pontemonti.AdventOfCode.Geometry
             => Math.Abs(this.VelocityX) + Math.Abs(this.VelocityY) + Math.Abs(this.VelocityZ);
         public int TotalEnergy => this.PotentialEnergy * this.KineticEnergy;
 
+        public Moon Clone()
+            => new Moon(this.X, this.Y, this.Z, this.VelocityX, this.VelocityY, this.VelocityZ);
+
         public override string ToString()
             => $"pos=<x={this.X}, y={this.Y}, z={this.Z}>, vel=<x={this.VelocityX}, y={this.VelocityY}, z={this.VelocityZ}>";
     }
