@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Pontemonti.AdventOfCode.Geometry;
+using Pontemonti.AdventOfCode.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -218,6 +220,18 @@ namespace Pontemonti.AdventOfCode.Year2019
 <x=12, y=5, z=12>
 <x=5, y=-8, z=6>";
 
-        public void Solve() => throw new NotImplementedException();
+        public void Solve()
+        {
+            int result = CalculateResult();
+            Console.WriteLine($"Total energy in the system after 1000 steps: {result}");
+        }
+
+        public static int CalculateResult()
+        {
+            JupiterMoons jupiterMoons = InputHelper.ReadJupiterMoons(input);
+            jupiterMoons.RunSteps(1000);
+            int totalEnergy = jupiterMoons.TotalEnergy;
+            return totalEnergy;
+        }
     }
 }

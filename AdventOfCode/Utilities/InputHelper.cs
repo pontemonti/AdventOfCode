@@ -57,6 +57,27 @@ namespace Pontemonti.AdventOfCode.Utilities
             }
         }
 
+        public static JupiterMoons ReadJupiterMoons(string input)
+        {
+            List<Moon> moons = new List<Moon>();
+            string[] lines = input.Split(Environment.NewLine);
+            foreach (string line in lines)
+            {
+                string trimmedLine = line.Replace("<", string.Empty);
+                trimmedLine = trimmedLine.Replace(">", string.Empty);
+                string[] split = trimmedLine.Split(",");
+                string strx = split[0].Trim().Substring(2);
+                int x = int.Parse(strx);
+                int y = int.Parse(split[1].Trim().Substring(2));
+                int z = int.Parse(split[2].Trim().Substring(2));
+                Moon moon = new Moon(x, y, z);
+                moons.Add(moon);
+            }
+
+            JupiterMoons jupiterMoons = new JupiterMoons(moons);
+            return jupiterMoons;
+        }
+
         public static IEnumerable<(string, string)> ReadOrbitPairLines(string input)
         {
             string[] orbitPairList = input.Split(Environment.NewLine);
