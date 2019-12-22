@@ -53,6 +53,8 @@ namespace Pontemonti.AdventOfCode.Intcode
 
         public event EventHandler<long> OutputSent;
 
+        public event EventHandler WaitingForInput;
+
         public long[] GetCurrentState() => this.program;
 
         public void ProvideInput(long input)
@@ -84,6 +86,7 @@ namespace Pontemonti.AdventOfCode.Intcode
 
         public long ReadNextInput()
         {
+            this.OnWaitingForInput();
             if (this.semaphore.WaitOne(60 * 1000))
             {
                 long input = this.Inputs[this.CurrentInputPosition++];
@@ -137,6 +140,12 @@ namespace Pontemonti.AdventOfCode.Intcode
             Console.WriteLine($"{this.Name}: sent output {output}");
             this.Output = output;
             this.OutputSent?.Invoke(this, output);
+        }
+
+        internal void OnWaitingForInput()
+        {
+            Console.WriteLine($"{this.Name}: waiting for input");
+            this.WaitingForInput?.Invoke(this, new EventArgs());
         }
 
         private Opcode GetOpcode()

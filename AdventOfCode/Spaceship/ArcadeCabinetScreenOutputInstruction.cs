@@ -15,6 +15,6 @@ namespace Pontemonti.AdventOfCode.Spaceship
     {
         XPosition = 0,
         YPosition = 1,
-        TileId = 2
+        TileIdOrScore = 2
     }
 }

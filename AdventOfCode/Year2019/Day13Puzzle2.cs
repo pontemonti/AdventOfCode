@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Pontemonti.AdventOfCode.Intcode;
+using Pontemonti.AdventOfCode.Spaceship;
+using Pontemonti.AdventOfCode.Utilities;
 
 namespace Pontemonti.AdventOfCode.Year2019
 {
@@ -29,6 +33,25 @@ namespace Pontemonti.AdventOfCode.Year2019
     /// </summary>
     public class Day13Puzzle2 : IPuzzle
     {
-        public void Solve() => throw new NotImplementedException();
+
+        public void Solve()
+        {
+            int result = CalculateResult();
+            Console.WriteLine($"Score: {result}");
+        }
+
+        public static int CalculateResult()
+        {
+            long[] program = InputHelper.ReadInt64CommaList(Day13Puzzle1.input).ToArray();
+
+            // Memory address 0 represents the number of quarters that have been inserted;
+            // set it to 2 to play for free.
+            program[0] = 2;
+            IntcodeComputer intcodeComputer = new IntcodeComputer("Elf arcade game - free play", program);
+            ArcadeCabinet arcadeCabinet = new ArcadeCabinet(intcodeComputer);
+            arcadeCabinet.Run();
+            int score = arcadeCabinet.Score;
+            return score;
+        }
     }
 }
