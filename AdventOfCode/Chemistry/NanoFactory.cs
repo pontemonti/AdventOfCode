@@ -16,11 +16,57 @@ namespace Pontemonti.AdventOfCode.Chemistry
 
         public long FindNumberOfUnitsRequiredToMakeChemical(string sourceChemicalName, Chemical chemicalToMake)
         {
-            Dictionary<string, int> leftovers = new Dictionary<string, int>();
-            return this.FindNumberOfUnitsRequiredToMakeChemical(sourceChemicalName, chemicalToMake, leftovers);
+            Dictionary<string, long> leftovers = new Dictionary<string, long>();
+            long numberOfUnitsRequired = this.FindNumberOfUnitsRequiredToMakeChemical(sourceChemicalName, chemicalToMake, leftovers);
+            return numberOfUnitsRequired;
         }
 
-        private long FindNumberOfUnitsRequiredToMakeChemical(string sourceChemicalName, Chemical chemicalToMake, Dictionary<string, int> leftovers)
+        public long FindNumberOfUnitsThatCanBeMadeFromChemical(Chemical sourceChemical, string targetChemicalName)
+        {
+            Dictionary<string, long> leftovers = new Dictionary<string, long>();
+            string sourceChemicalName = sourceChemical.Name;
+            long sourceChemicalAmount = sourceChemical.Quantity;
+            long numberOfUnitsMade = 0;
+
+            // Figure out how many units or "source" it takes to make 1 "target"
+            // Use this number to adjust the initial search amount
+            long numberOfUnitsRequiredToMakeOne = this.FindNumberOfUnitsRequiredToMakeChemical(sourceChemicalName, new Chemical(targetChemicalName, 1));
+            long factor = numberOfUnitsRequiredToMakeOne / 10;
+            long targetChemicalSearchAmount = sourceChemicalAmount/factor;
+            bool shouldKeepGoing = true;
+
+            // Binary search to find the correct target amount
+            // TODO: This is pretty messy, consider cleaning it up
+            while (true)
+            {
+                Chemical targetChemical = new Chemical(targetChemicalName, targetChemicalSearchAmount);
+                long numberOfUnitsRequired = this.FindNumberOfUnitsRequiredToMakeChemical(sourceChemicalName, targetChemical, leftovers);
+                if (sourceChemicalAmount >= numberOfUnitsRequired)
+                {
+                    numberOfUnitsMade += targetChemicalSearchAmount;
+                    sourceChemicalAmount -= numberOfUnitsRequired;
+                }
+
+                // Search twice for amount 1, to account for leftovers
+                if (targetChemicalSearchAmount == 1)
+                {
+                    if (!shouldKeepGoing)
+                    {
+                        break;
+                    }
+
+                    shouldKeepGoing = false;
+                }
+                else
+                {
+                    targetChemicalSearchAmount /= 2;
+                }
+            }
+
+            return numberOfUnitsMade;
+        }
+
+        private long FindNumberOfUnitsRequiredToMakeChemical(string sourceChemicalName, Chemical chemicalToMake, Dictionary<string, long> leftovers)
         {
             // We found the source chemical, just return its quantity
             if (sourceChemicalName == chemicalToMake.Name)
@@ -31,8 +77,8 @@ namespace Pontemonti.AdventOfCode.Chemistry
             Reaction targetReaction = this.FindReactionForTargetChemical(chemicalToMake);
 
             // Figure out how many times we need to execute the reaction, and how many leftovers it yields
-            int numberOfReactionsRequired = (int)Math.Ceiling(chemicalToMake.Quantity / (double)targetReaction.OutputChemical.Quantity);
-            int numberOfLeftovers = numberOfReactionsRequired * targetReaction.OutputChemical.Quantity - chemicalToMake.Quantity;
+            long numberOfReactionsRequired = (long)Math.Ceiling(chemicalToMake.Quantity / (double)targetReaction.OutputChemical.Quantity);
+            long numberOfLeftovers = numberOfReactionsRequired * targetReaction.OutputChemical.Quantity - chemicalToMake.Quantity;
             if (leftovers.ContainsKey(targetReaction.OutputChemical.Name))
             {
                 leftovers[targetReaction.OutputChemical.Name] += numberOfLeftovers;
@@ -45,14 +91,14 @@ namespace Pontemonti.AdventOfCode.Chemistry
             long numberOfUnitsRequired = 0;
             foreach (Chemical inputChemical in targetReaction.InputChemicals)
             {
-                int inputChemicalLeftovers = 0;
+                long inputChemicalLeftovers = 0;
                 if (leftovers.ContainsKey(inputChemical.Name))
                 {
                     inputChemicalLeftovers = leftovers[inputChemical.Name];
                     leftovers[inputChemical.Name] = 0;
                 }
 
-                int inputChemicalToMake = numberOfReactionsRequired * inputChemical.Quantity - inputChemicalLeftovers;
+                long inputChemicalToMake = numberOfReactionsRequired * inputChemical.Quantity - inputChemicalLeftovers;
                 Chemical adjustedInputChemical = new Chemical(inputChemical.Name, inputChemicalToMake);
                 numberOfUnitsRequired += this.FindNumberOfUnitsRequiredToMakeChemical(sourceChemicalName, adjustedInputChemical, leftovers);
             }

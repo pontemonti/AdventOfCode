@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Pontemonti.AdventOfCode.Chemistry;
+using Pontemonti.AdventOfCode.Utilities;
 
 namespace Pontemonti.AdventOfCode.Year2019
 {
@@ -19,6 +22,22 @@ namespace Pontemonti.AdventOfCode.Year2019
     /// </summary>
     public class Day14Puzzle2 : IPuzzle
     {
-        public void Solve() => throw new NotImplementedException();
+        public void Solve()
+        {
+            long result = CalculateResult();
+            Console.WriteLine($"Maximum amount of FUEL that can be produced with 1 trillion ORE: {result}");
+        }
+
+        public static long CalculateResult()
+        {
+            Reaction[] reactions = InputHelper.ReadReactionLines(Day14Puzzle1.input).ToArray();
+            NanoFactory nanoFactory = new NanoFactory(reactions);
+            const string sourceChemicalName = "ORE";
+            const long sourceChemicalAmount = 1000000000000;
+            const string targetChemicalName = "FUEL";
+            Chemical sourceChemical = new Chemical(sourceChemicalName, sourceChemicalAmount);
+            long result = nanoFactory.FindNumberOfUnitsThatCanBeMadeFromChemical(sourceChemical, targetChemicalName);
+            return result;
+        }
     }
 }
