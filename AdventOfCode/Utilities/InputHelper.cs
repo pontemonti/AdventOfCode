@@ -1,4 +1,5 @@
-﻿using Pontemonti.AdventOfCode.Geometry;
+﻿using Pontemonti.AdventOfCode.Chemistry;
+using Pontemonti.AdventOfCode.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -87,6 +88,33 @@ namespace Pontemonti.AdventOfCode.Utilities
                 string to = orbits[0];
                 string from = orbits[1];
                 yield return (to, from);
+            }
+        }
+
+        public static IEnumerable<Reaction> ReadReactionLines(string inputLines)
+        {
+            string[] lines = inputLines.Split(Environment.NewLine);
+            foreach (string line in lines)
+            {
+                string[] split = line.Split("=>");
+                string inputChemicalsString = split[0];
+                string[] inputChemicalsSplit = inputChemicalsString.Split(",");
+                List<Chemical> inputChemicalsList = new List<Chemical>();
+                foreach (string inputChemical in inputChemicalsSplit)
+                {
+                    string[] inputChemicalSplit = inputChemical.Trim().Split(" ");
+                    int inputChemicalQuantity = int.Parse(inputChemicalSplit[0]);
+                    string inputChemicalName = inputChemicalSplit[1];
+                    inputChemicalsList.Add(new Chemical(inputChemicalName, inputChemicalQuantity));
+                }
+
+                string outputChemicalString = split[1];
+                string[] outputChemicalSplit = outputChemicalString.Trim().Split(" ");
+                int outputChemicalQuantity = int.Parse(outputChemicalSplit[0]);
+                string outputChemicalName = outputChemicalSplit[1];
+                Chemical outputChemical = new Chemical(outputChemicalName, outputChemicalQuantity);
+                Reaction reaction = new Reaction(inputChemicalsList, outputChemical);
+                yield return reaction;
             }
         }
 

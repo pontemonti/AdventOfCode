@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Pontemonti.AdventOfCode.Chemistry;
+using Pontemonti.AdventOfCode.Utilities;
 
 namespace Pontemonti.AdventOfCode.Year2019
 {
@@ -115,7 +118,20 @@ namespace Pontemonti.AdventOfCode.Year2019
     /// </summary>
     public class Day14Puzzle1 : IPuzzle
     {
-        public void Solve() => throw new NotImplementedException();
+        public void Solve()
+        {
+            long result = CalculateResult();
+            Console.WriteLine($"Minimum amount of ORE required to produce exactly 1 FUEL: {result}");
+        }
+
+        public static long CalculateResult()
+        {
+            Reaction[] reactions = InputHelper.ReadReactionLines(input).ToArray();
+            NanoFactory nanoFactory = new NanoFactory(reactions);
+            Chemical chemicalToMake = new Chemical("FUEL", 1);
+            long result = nanoFactory.FindNumberOfUnitsRequiredToMakeChemical("ORE", chemicalToMake);
+            return result;
+        }
 
         public const string input = @"4 NZGF => 6 WBMZG
 20 FWMN, 2 QTMF, 5 FMVDV, 1 CVBPJ, 2 KVJK, 20 XSTBX, 7 NBFS => 5 SHPSF
