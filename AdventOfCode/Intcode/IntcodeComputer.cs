@@ -11,12 +11,14 @@ namespace Pontemonti.AdventOfCode.Intcode
     {
         private Semaphore semaphore;
         private long[] program;
+        private bool shouldTerminateExecution;
 
         public IntcodeComputer(string name, long[] program, params long[] inputs)
         {
             this.Name = name;
             this.semaphore = new Semaphore(0, 100);
             this.program = program;
+            this.shouldTerminateExecution = false;
             this.CurrentPosition = 0;
             this.CurrentInputPosition = 0;
             this.RelativeBasePosition = 0;
@@ -89,6 +91,11 @@ namespace Pontemonti.AdventOfCode.Intcode
             this.OnWaitingForInput();
             if (this.semaphore.WaitOne(60 * 1000))
             {
+                if (this.shouldTerminateExecution)
+                {
+                    throw new TerminateIntcodeComputerException();
+                }
+
                 long input = this.Inputs[this.CurrentInputPosition++];
                 Console.WriteLine($"{this.Name}: Input read: {input}; next input position: {this.CurrentInputPosition}");
                 return input;
@@ -106,7 +113,15 @@ namespace Pontemonti.AdventOfCode.Intcode
             {
                 operation = this.GetOperation();
                 Console.WriteLine($"Executing operation {operation.Opcode}...");
-                operation.Execute();
+                try
+                {
+                    operation.Execute();
+                }
+                catch (TerminateIntcodeComputerException)
+                {
+                    // Intcode computer was intentionally stopped during execution
+                    break;
+                }
 
                 // This is used for Jump operations, where we don't want to jump again if we've just jumped.
                 if (operation.GoToNextOperation)
@@ -114,7 +129,15 @@ namespace Pontemonti.AdventOfCode.Intcode
                     this.GoToNextPosition(operation);
                 }
             }
-            while (operation.Opcode != Opcode.Exit);
+            while (operation.Opcode != Opcode.Exit && !this.shouldTerminateExecution);
+        }
+
+        public void TerminateExecution()
+        {
+            // If we're waiting for input, signal to the semaphore to stop
+            // TODO: Constant for the semaphore max count?
+            this.shouldTerminateExecution = true;
+            this.semaphore.Release(100);
         }
 
         public void WriteToMemory(long position, long value)
