@@ -1,6 +1,7 @@
 ﻿using Pontemonti.AdventOfCode.Intcode.Operations;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -64,7 +65,7 @@ namespace Pontemonti.AdventOfCode.Intcode
             this.Inputs.Add(input);
             int previousCount = this.semaphore.Release();
             
-            Console.WriteLine($"{this.Name}: Input {input} added to position {this.Inputs.Count}; semaphore previous count: {previousCount}.");
+            Debug.WriteLine($"{this.Name}: Input {input} added to position {this.Inputs.Count}; semaphore previous count: {previousCount}.");
         }
 
         public long ReadFromMemory(long position)
@@ -97,7 +98,7 @@ namespace Pontemonti.AdventOfCode.Intcode
                 }
 
                 long input = this.Inputs[this.CurrentInputPosition++];
-                Console.WriteLine($"{this.Name}: Input read: {input}; next input position: {this.CurrentInputPosition}");
+                Debug.WriteLine($"{this.Name}: Input read: {input}; next input position: {this.CurrentInputPosition}");
                 return input;
             }
             else
@@ -112,7 +113,7 @@ namespace Pontemonti.AdventOfCode.Intcode
             do
             {
                 operation = this.GetOperation();
-                Console.WriteLine($"Executing operation {operation.Opcode}...");
+                Debug.WriteLine($"Executing operation {operation.Opcode}...");
                 try
                 {
                     operation.Execute();
@@ -160,14 +161,14 @@ namespace Pontemonti.AdventOfCode.Intcode
         internal void OnOutputSent(long output)
         {
             // Store latest output in Output property
-            Console.WriteLine($"{this.Name}: sent output {output}");
+            Debug.WriteLine($"{this.Name}: sent output {output}");
             this.Output = output;
             this.OutputSent?.Invoke(this, output);
         }
 
         internal void OnWaitingForInput()
         {
-            Console.WriteLine($"{this.Name}: waiting for input");
+            Debug.WriteLine($"{this.Name}: waiting for input");
             this.WaitingForInput?.Invoke(this, new EventArgs());
         }
 
