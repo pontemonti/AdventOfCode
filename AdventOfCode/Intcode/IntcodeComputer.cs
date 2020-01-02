@@ -107,6 +107,12 @@ namespace Pontemonti.AdventOfCode.Intcode
             }
         }
 
+        public void ResetState(long[] program)
+        {
+            this.TerminateExecution();
+            this.program = program;
+        }
+
         public void Run()
         {
             this.shouldTerminateExecution = false;
