@@ -107,9 +107,8 @@ namespace Pontemonti.AdventOfCode.Intcode
             }
         }
 
-        public void ResetState(long[] program)
+        public void SetState(long[] program)
         {
-            this.TerminateExecution();
             this.program = program;
         }
 
