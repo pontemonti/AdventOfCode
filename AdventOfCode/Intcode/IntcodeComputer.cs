@@ -109,6 +109,7 @@ namespace Pontemonti.AdventOfCode.Intcode
 
         public void Run()
         {
+            this.shouldTerminateExecution = false;
             IOperation operation;
             do
             {
