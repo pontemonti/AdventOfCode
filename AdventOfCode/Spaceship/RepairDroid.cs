@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Pontemonti.AdventOfCode.Geometry;
+using Pontemonti.AdventOfCode.Graph;
 using Pontemonti.AdventOfCode.Intcode;
 using Pontemonti.AdventOfCode.Utilities;
 
@@ -114,6 +115,38 @@ namespace Pontemonti.AdventOfCode.Spaceship
             // no "rooms") so this is the only thing we need to do to find the shortest path.
             Stack<RepairDroidNavigationStep> currentShortestPathToOxygenSystem = this.GetShortestPathToOxygenSystem();
             return currentShortestPathToOxygenSystem.ToList();
+        }
+
+        public int GetMinutesToFillEntireAreaWithOxygen()
+        {
+            List<RepairDroidNavigationStep> navigationStepsToOxygenSystem = this.FindShortestPathToOxygenSystem();
+            List<Vertex<Point>> vertices = new List<Vertex<Point>>();
+            List<Edge<Point>> edges = new List<Edge<Point>>();
+            foreach (Point validPosition in this.knownPositions.Keys)
+            {
+                Vertex<Point> vertex = new Vertex<Point>(validPosition);
+                vertices.Add(vertex);
+            }
+
+            foreach (Vertex<Point> vertex in vertices)
+            {
+                foreach (RepairDroidMovementCommand movementCommand in this.movementCommands)
+                {
+                    Point adjacentPoint = vertex.Value.GetNextPosition(movementCommand);
+                    Vertex<Point> adjacentVertex = vertices.FirstOrDefault(v => v.Value.Equals(adjacentPoint));
+                    if (adjacentVertex != null)
+                    {
+                        Edge<Point> edge = new Edge<Point>(vertex, adjacentVertex);
+                        edges.Add(edge);
+                    }
+                }
+            }
+
+            Graph<Point> graph = new Graph<Point>(vertices, edges);
+
+            Vertex<Point> oxygenSystemVertex = new Vertex<Point>(this.oxygenSystemPosition);
+            List<Edge<Point>> edgesToFarthestVertex = graph.FindPathToFarthestVertex(oxygenSystemVertex).ToList();
+            return edgesToFarthestVertex.Count;
         }
 
         private void EnqueuePotentialMoves()

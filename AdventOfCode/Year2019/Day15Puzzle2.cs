@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pontemonti.AdventOfCode.Spaceship;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -61,6 +62,17 @@ namespace Pontemonti.AdventOfCode.Year2019
     /// </summary>
     public class Day15Puzzle2 : IPuzzle
     {
-        public void Solve() => throw new NotImplementedException();
+        public void Solve()
+        {
+            int result = CalculateResult();
+            Console.WriteLine($"Minutes to fill entire map with oxygen: {result}");
+        }
+
+        public static int CalculateResult()
+        {
+            RepairDroid repairDroid = RepairDroid.Create();
+            int minutes = repairDroid.GetMinutesToFillEntireAreaWithOxygen();
+            return minutes;
+        }
     }
 }
