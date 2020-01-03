@@ -19,7 +19,7 @@ namespace Pontemonti.AdventOfCode.Spaceship
         private RepairDroidMovementCommand currentMovementCommand;
         private HashSet<Point> validPositions;
         internal HashSet<Point> wallPositions;
-        private Queue<RepairDroidNavigationStep> potentialPointQueue;
+        private Stack<RepairDroidNavigationStep> potentialPointStack;
         private HashSet<Point> positionsVisited;
         private RepairDroidMovementCommand[] movementCommands = new[]
         {
@@ -49,6 +49,8 @@ namespace Pontemonti.AdventOfCode.Spaceship
 
         public void DrawMap()
         {
+            Stack<RepairDroidNavigationStep> currentShortestPathToOxygenSystem = this.GetShortestPathToOxygenSystem();
+
             int minX = this.wallPositions.Min(p => p.X);
             int maxX = this.wallPositions.Max(p => p.X);
             int widthX = maxX - minX;
@@ -78,7 +80,7 @@ namespace Pontemonti.AdventOfCode.Spaceship
                     {
                         s = "X";
                     }
-                    else if (this.currentShortestPath.Any(step => step.DestinationPosition.Equals(p) || step.OriginPosition.Equals(p)))
+                    else if (currentShortestPathToOxygenSystem.Any(step => step.DestinationPosition.Equals(p) || step.OriginPosition.Equals(p)))
                     {
                         s = ".";
                     }
@@ -98,7 +100,7 @@ namespace Pontemonti.AdventOfCode.Spaceship
             this.wallPositions = new HashSet<Point>();
             this.positionsVisited = new HashSet<Point>();
             this.positionsVisited.Add(this.currentPosition);
-            this.potentialPointQueue = new Queue<RepairDroidNavigationStep>();
+            this.potentialPointStack = new Stack<RepairDroidNavigationStep>();
             this.movementCommandQueue = new Queue<RepairDroidMovementCommand>();
             this.knownPositions = new Dictionary<Point, RepairDroidNavigationStep?>();
             this.knownPositions.Add(this.currentPosition, null);
@@ -110,7 +112,8 @@ namespace Pontemonti.AdventOfCode.Spaceship
             // remove duplicate paths between duplicate positions (that means we back-tracked)
             // assume there are walls between empty spaces (i.e. there are only "tunnels", 
             // no "rooms") so this is the only thing we need to do to find the shortest path.
-            return this.currentShortestPath.ToList();
+            Stack<RepairDroidNavigationStep> currentShortestPathToOxygenSystem = this.GetShortestPathToOxygenSystem();
+            return currentShortestPathToOxygenSystem.ToList();
         }
 
         private void EnqueuePotentialMoves()
@@ -123,9 +126,17 @@ namespace Pontemonti.AdventOfCode.Spaceship
                 {
                     Stack<RepairDroidNavigationStep> copyOfCurrentShortestPath = new Stack<RepairDroidNavigationStep>(this.currentShortestPath.ToArray().Reverse());
                     RepairDroidNavigationStep navigationStep = new RepairDroidNavigationStep(this.currentPosition, potentialMovementCommand, copyOfCurrentShortestPath);
-                    this.potentialPointQueue.Enqueue(navigationStep);
+                    this.potentialPointStack.Push(navigationStep);
                 }
             }
+        }
+
+        private Stack<RepairDroidNavigationStep> GetShortestPathToOxygenSystem()
+        {
+            RepairDroidNavigationStep stepToOxygenSystem = this.knownPositions[this.oxygenSystemPosition];
+            Stack<RepairDroidNavigationStep> currentShortestPathToOxygenSystem = new Stack<RepairDroidNavigationStep>(stepToOxygenSystem.ShortestPathToOrigin.ToArray().Reverse());
+            currentShortestPathToOxygenSystem.Push(stepToOxygenSystem);
+            return currentShortestPathToOxygenSystem;
         }
 
         private bool IsPositionGoodToVisit(Point potentialPosition)
@@ -142,7 +153,7 @@ namespace Pontemonti.AdventOfCode.Spaceship
                 return false;
             }
 
-            if (this.potentialPointQueue.Any(step => step.DestinationPosition.Equals(potentialPosition)))
+            if (this.potentialPointStack.Any(step => step.DestinationPosition.Equals(potentialPosition)))
             {
                 // We're already planning to go here
                 return false;
@@ -165,29 +176,36 @@ namespace Pontemonti.AdventOfCode.Spaceship
                 case RepairDroidStatusCode.OxygenSystemFound:
                     this.UpdateCurrentPosition();
                     this.oxygenSystemPosition = this.currentPosition;
-                    this.DrawMap();
-
-                    // The remote control program executes in a loop forever
-                    // Since we found the oxygen system, signal to the computer to stop
-                    this.intcodeComputer.TerminateExecution();
                     break;
             }
         }
 
         private void IntcodeComputerWaitingForInput(object? sender, EventArgs e)
         {
+            if (!this.HasNextMovementCommand())
+            {
+                // The remote control program executes in a loop forever
+                // Since we found the oxygen system, signal to the computer to stop
+                this.intcodeComputer.TerminateExecution();
+
+                this.DrawMap();
+                return;
+            }
+
             RepairDroidMovementCommand movementCommand = this.FindNextMovementCommand();
             this.currentMovementCommand = movementCommand;
             Debug.WriteLine($"Move {movementCommand} from {this.currentPosition} to {this.currentPosition.GetNextPosition(movementCommand)}");
             this.intcodeComputer.ProvideInput((long)movementCommand);
         }
 
+        private bool HasNextMovementCommand() => this.movementCommandQueue.Any() || this.potentialPointStack.Any();
+
         private RepairDroidMovementCommand FindNextMovementCommand()
         {
             if (!this.movementCommandQueue.Any())
             {
                 // No command queued up. What's the next navigation step?
-                RepairDroidNavigationStep nextStep = this.potentialPointQueue.Dequeue();
+                RepairDroidNavigationStep nextStep = this.potentialPointStack.Pop();
                 if (!nextStep.OriginPosition.Equals(this.currentPosition))
                 {
                     RepairDroidMovementCommand[] movementCommandsToOrigin = this.FindMovementCommandsToPosition(nextStep.OriginPosition).ToArray();
