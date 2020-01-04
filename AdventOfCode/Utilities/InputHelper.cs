@@ -31,6 +31,19 @@ namespace Pontemonti.AdventOfCode.Utilities
             return asteroidMap;
         }
 
+        public static IEnumerable<int> ReadDigitList(string input)
+        {
+            int[] digits = new int[input.Length];
+            for (int i = 0; i < input.Length; i++)
+            {
+                string digitString = input.Substring(i, 1);
+                int digit = int.Parse(digitString);
+                digits[i] = digit;
+            }
+
+            return digits;
+        }
+
         public static IEnumerable<int> ReadIntegerLines(string input)
         {
             string[] inputLines = input.Split(Environment.NewLine);

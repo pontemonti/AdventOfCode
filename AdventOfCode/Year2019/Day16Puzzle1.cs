@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Pontemonti.AdventOfCode.Utilities;
 
 namespace Pontemonti.AdventOfCode.Year2019
 {
@@ -107,8 +109,76 @@ namespace Pontemonti.AdventOfCode.Year2019
     /// </summary>
     public class Day16Puzzle1 : IPuzzle
     {
-        public const string intput = "59754835304279095723667830764559994207668723615273907123832849523285892960990393495763064170399328763959561728553125232713663009161639789035331160605704223863754174835946381029543455581717775283582638013183215312822018348826709095340993876483418084566769957325454646682224309983510781204738662326823284208246064957584474684120465225052336374823382738788573365821572559301715471129142028462682986045997614184200503304763967364026464055684787169501819241361777789595715281841253470186857857671012867285957360755646446993278909888646724963166642032217322712337954157163771552371824741783496515778370667935574438315692768492954716331430001072240959235708";
+        public const string input = "59754835304279095723667830764559994207668723615273907123832849523285892960990393495763064170399328763959561728553125232713663009161639789035331160605704223863754174835946381029543455581717775283582638013183215312822018348826709095340993876483418084566769957325454646682224309983510781204738662326823284208246064957584474684120465225052336374823382738788573365821572559301715471129142028462682986045997614184200503304763967364026464055684787169501819241361777789595715281841253470186857857671012867285957360755646446993278909888646724963166642032217322712337954157163771552371824741783496515778370667935574438315692768492954716331430001072240959235708";
 
-        public void Solve() => throw new NotImplementedException();
+        public void Solve()
+        {
+            string result = CalculateResult(input);
+            Console.WriteLine($"The first eight digits in the final output list: {result}");
+        }
+
+        public static string CalculateResult(string inputSignal)
+        {
+            int[] digits = InputHelper.ReadDigitList(inputSignal).ToArray();
+            for (int i = 1; i <= 100; i++)
+            {
+                digits = CalculatePhase(digits);
+            }
+
+            int[] first8Digits = digits.Take(8).ToArray();
+            string first8DigitsString = string.Join(string.Empty, first8Digits);
+            return first8DigitsString;
+        }
+
+        public static int[] CalculatePhase(int[] inputSignal)
+        {
+            // For i = 0, pattern is 1, 0, -1, 0, 1, ...
+            // For i = 1, pattern is 0, 1, 1, 0, 0, -1, -1, 0, 0, 1, 1, ...
+            // For i = 2, pattern is 0, 0, 1, 1, 1, 0, 0, 0, -1, -1, -1, 0, 0, 0, 1, 1, 1, ...
+            // For i = 3, pattern is 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, 1, 1, 1, 1, ...
+            int[] outputSignal = new int[inputSignal.Length];
+            for (int i = 0; i < inputSignal.Length; i++)
+            {
+                int outputDigit = 0;
+                int repeatDigits = i + 1;
+                int startIndex = i;
+
+                // Additions
+                foreach (int digit in GetPatternIntegers(inputSignal, startIndex, repeatDigits))
+                {
+                    outputDigit += digit;
+                }
+
+                // Subtractions
+                foreach (int digit in GetPatternIntegers(inputSignal, startIndex + (2 * repeatDigits), repeatDigits))
+                {
+                    outputDigit -= digit;
+                }
+
+                outputSignal[i] = Math.Abs(outputDigit) % 10;
+            }
+
+            return outputSignal;
+        }
+
+        private static int[] GetPatternIntegers(int[] inputSignal, int startIndex, int repeat)
+        {
+            List<int> patternIntegers = new List<int>();
+            for (int i = startIndex; i < inputSignal.Length; i += 4 * repeat)
+            {
+                for (int j = 0; j < repeat; j++)
+                {
+                    int index = i + j;
+                    if (index >= inputSignal.Length)
+                    {
+                        break;
+                    }
+
+                    patternIntegers.Add(inputSignal[index]);
+                }
+            }
+
+            return patternIntegers.ToArray();
+        }
     }
 }
