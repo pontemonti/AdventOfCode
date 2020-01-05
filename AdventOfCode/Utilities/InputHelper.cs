@@ -1,5 +1,6 @@
 ﻿using Pontemonti.AdventOfCode.Chemistry;
 using Pontemonti.AdventOfCode.Geometry;
+using Pontemonti.AdventOfCode.Spaceship;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,28 @@ namespace Pontemonti.AdventOfCode.Utilities
     public class InputHelper
     {
         public const char Comma = ',';
+
+        public static AsciiMap ReadAsciiMap(string mapString)
+        {
+            List<Point> scaffoldPositions = new List<Point>();
+
+            string[] mapLines = mapString.Split(Environment.NewLine);
+            for (int y = 0; y < mapLines.Length; y++)
+            {
+                string mapLine = mapLines[y];
+                for (int x = 0; x < mapLine.Length; x++)
+                {
+                    if (mapLine[x] == '#')
+                    {
+                        Point point = new Point(x, y);
+                        scaffoldPositions.Add(point);
+                    }
+                }
+            }
+
+            AsciiMap asciiMap = new AsciiMap(scaffoldPositions);
+            return asciiMap;
+        }
 
         public static AsteroidMap ReadAsteroidMap(string input)
         {

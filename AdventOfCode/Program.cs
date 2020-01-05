@@ -7,8 +7,8 @@ namespace Pontemonti.AdventOfCode
     class Program
     {
         private const int defaultYear = 2019;
-        private const int defaultDay = 16;
-        private const int defaultPuzzle = 2;
+        private const int defaultDay = 17;
+        private const int defaultPuzzle = 1;
 
         static void Main(string[] args)
         {
